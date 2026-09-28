@@ -80,9 +80,15 @@ template TagRank(Tag)
     else static assert(0, "unranked dimension tag in research probe");
 }
 
+struct TermList(Terms...)
+{
+    alias Items = AliasSeq!Terms;
+    enum length = Terms.length;
+}
+
 struct OpenDimension(Terms...)
 {
-    alias TermsList = AliasSeq!Terms;
+    alias TermsList = TermList!Terms;
 }
 
 template MergeTermLists(AList, BList)
@@ -142,18 +148,18 @@ template ScaleTerms(List, int N)
 template OpenMul(A, B)
 {
     alias OpenMul = OpenDimension!(
-        MergeTermLists!(A.TermsList, B.TermsList));
+        MergeTermLists!(A.TermsList, B.TermsList).Items);
 }
 
 template OpenDiv(A, B)
 {
     alias OpenDiv = OpenDimension!(
-        MergeTermLists!(A.TermsList, NegateTerms!(B.TermsList)));
+        MergeTermLists!(A.TermsList, NegateTerms!(B.TermsList)).Items);
 }
 
 template OpenPow(A, int N)
 {
-    alias OpenPow = OpenDimension!(ScaleTerms!(A.TermsList, N));
+    alias OpenPow = OpenDimension!(ScaleTerms!(A.TermsList, N).Items);
 }
 
 alias OpenLength = OpenDimension!(DimTerm!(LengthTag, 1));
@@ -167,10 +173,10 @@ alias OpenAcceleration = OpenDiv!(OpenVelocity, OpenTime);
 alias OpenArea = OpenPow!(OpenLength, 2);
 
 static assert(OpenArea.TermsList.length == 1);
-static assert(OpenArea.TermsList[0].exponent == 2);
+static assert(OpenArea.TermsList.Items[0].exponent == 2);
 static assert(OpenAcceleration.TermsList.length == 2);
-static assert(OpenAcceleration.TermsList[0].exponent == 1);
-static assert(OpenAcceleration.TermsList[1].exponent == -2);
+static assert(OpenAcceleration.TermsList.Items[0].exponent == 1);
+static assert(OpenAcceleration.TermsList.Items[1].exponent == -2);
 
 // Cancellation must normalize to the empty dimension.
 alias OpenDimensionless = OpenDiv!(OpenLength, OpenLength);
