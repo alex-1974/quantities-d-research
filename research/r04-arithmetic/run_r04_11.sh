@@ -40,4 +40,9 @@ for compiler in "${compilers[@]}"; do
     fi
 done
 
+# Preserve a useful status for normal execution, but never terminate an
+# interactive parent shell when this file was accidentally sourced.
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+    return "$failed"
+fi
 exit "$failed"
