@@ -19,6 +19,7 @@ canonical_algebra="$here/r04_11_canonical_dimension_algebra_probe.d"
 unit_algebra="$here/r04_11_unit_algebra_probe.d"
 result_spec_rescale="$here/r04_11_result_spec_rescale_probe.d"
 product_api="$here/r04_11_product_api_probe.d"
+exact_result="$here/r04_11_exact_arithmetic_result_probe.d"
 
 compilers=()
 command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
@@ -112,6 +113,17 @@ for compiler in "${compilers[@]}"; do
         echo "PASS: derived product API contract"
     fi
     rm -f "$product_api_exe"
+
+    echo "=== $compiler: exact arithmetic result carrier ==="
+    exact_result_exe="/tmp/r04_11_exact_result_${compiler}"
+    if ! "$compiler" -unittest "$exact_result" -I"$here" -of="$exact_result_exe"; then
+        failed=1
+    elif ! "$exact_result_exe"; then
+        failed=1
+    else
+        echo "PASS: shared exact arithmetic result carrier"
+    fi
+    rm -f "$exact_result_exe"
 
     echo "=== $compiler: scaled integral product range ==="
     if ! "$compiler" -c "$scaled_mul_rep" -I"$here" -of=/tmp/r04_11_scaled_mul_${compiler}.o; then
