@@ -340,3 +340,37 @@ conversion and `exactDiv` APIs.
 
 The exact public name and result type remain open for later R04 work; this probe
 establishes the safety requirement, not the final syntax.
+
+## Compiler evidence — combined product/range proof
+
+The scaled-product range probe now passes on both baseline compilers (DMD and
+LDC).
+
+The research oracle computes the complete mathematical endpoint range for the
+integral operand product first and treats canonical integer rescaling as part of
+the same range problem. The K=1 path preserves the full 128-bit product range;
+it does not narrow through an intermediate built-in Rep.
+
+An exhaustive compile-time comparison covers all 64 ordered pairs from:
+
+    byte, ubyte, short, ushort, int, uint, long, ulong
+
+For every pair admitted by the current production MulRep policy, the exact-range
+oracle also admits the pair. Representative mixed-width cases whose mathematical
+range exceeds all built-in integral Reps are rejected by both models.
+
+This supports the Gate-6 formulation:
+
+> ResultRep selection for integral derived-unit multiplication should be proven
+> over the complete mathematical expression, including any exact integer
+> canonical rescale, rather than by assuming that a separately selected MulRep
+> remains sufficient after rescaling.
+
+The name ScaledMulRep remains research terminology. This evidence does not yet
+select a production API or implementation strategy.
+
+The current focused oracle supports K=1 for the full 64x64 product domain and
+selected K>1 cases whose unscaled endpoint magnitudes remain within the probe's
+explicit rescale precondition. A general 128x64 rescale oracle is not required
+to establish the present safety invariant and should only be added if later
+research needs it.
