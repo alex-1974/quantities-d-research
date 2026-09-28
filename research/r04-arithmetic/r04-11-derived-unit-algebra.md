@@ -446,3 +446,41 @@ This preserves both goals:
 
 - open consumer participation at the boundary;
 - cheap canonical nominal identity inside quantities-d arithmetic.
+
+### Dimension tag ordering key
+
+The ordering-key probe passes on both baseline compilers. DMD and LDC produced
+the same fully qualified tag names for the tested core and consumer tags, for
+example:
+
+- `r04_11_dimension_key_probe.LengthTag`
+- `r04_11_dimension_key_probe.ConsumerAxisTag`
+
+Using `std.traits.fullyQualifiedName!Tag` as a compile-time **ordering key**
+therefore provides an open canonicalization mechanism without a core-owned
+`TagRank` registry and without requiring every consumer tag to publish a
+manual string key.
+
+Important separation:
+
+- the qualified name is only an ordering device;
+- mathematical tag identity remains nominal D type identity;
+- two distinct tag types must never become the same mathematical axis merely
+  because an ordering key collides.
+
+The explicit-key probe remains useful as evidence that custom keys are
+possible, but it is no longer the preferred default API. Requiring manual
+`dimensionKey` strings would add public naming policy and collision management
+without demonstrated need.
+
+**R04.11 direction:** prefer automatic qualified-name ordering for canonical
+term construction, with nominal tag identity as the semantic identity rule.
+Keep any explicit ordering-key customization out of the initial public API
+unless a concrete consumer case requires it.
+
+Caveat: a qualified name changes when a tag is renamed or moved to another
+module. That can change canonical term ordering and mangled type names, but it
+does not change mathematical identity within one build. Before production,
+ABI / serialized-type-name stability should be treated separately from
+mathematical correctness; quantities-d should not promise stable ABI based on
+internal template mangling unless explicitly designed for it.
