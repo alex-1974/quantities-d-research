@@ -27,7 +27,11 @@ template DivRatio(A, B)
 
 // --- Minimal dimension algebra: L^l T^t -----------------------------------
 
-struct Dimension(int L, int T) {}
+struct Dimension(int LExponent, int TExponent)
+{
+    enum lengthExponent = LExponent;
+    enum timeExponent = TExponent;
+}
 
 template MulDimension(A, B)
 {
