@@ -202,14 +202,26 @@ struct ConsumerRhs
 template MulResult(Lhs, Rhs)
 {
     static if (__traits(hasMember, Lhs, "ProductWith"))
-        alias Candidate = Lhs.ProductWith!Rhs;
+        alias LeftCandidate = Lhs.ProductWith!Rhs;
     else
-        alias Candidate = void;
+        alias LeftCandidate = void;
 
-    static if (!is(Candidate == void))
-        alias MulResult = Candidate;
-    else static if (__traits(hasMember, Rhs, "ProductFromLeft"))
-        alias MulResult = Rhs.ProductFromLeft!Lhs;
+    static if (__traits(hasMember, Rhs, "ProductFromLeft"))
+        alias RightCandidate = Rhs.ProductFromLeft!Lhs;
+    else
+        alias RightCandidate = void;
+
+    static if (!is(LeftCandidate == void) &&
+               !is(RightCandidate == void))
+    {
+        static assert(is(LeftCandidate == RightCandidate),
+            "conflicting multiplication relations");
+        alias MulResult = LeftCandidate;
+    }
+    else static if (!is(LeftCandidate == void))
+        alias MulResult = LeftCandidate;
+    else static if (!is(RightCandidate == void))
+        alias MulResult = RightCandidate;
     else
         alias MulResult = void;
 }
