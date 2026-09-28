@@ -130,3 +130,6 @@ unittest
 //
 // A separate checkedMul is not justified by this integral product state model
 // unless later research establishes distinct checked semantics.
+
+
+void main() {}
