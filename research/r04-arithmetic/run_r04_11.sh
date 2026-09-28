@@ -7,6 +7,7 @@ consumer="$here/r04_11_consumer_probe.d"
 negative="$here/r04_11_negative_no_relation.d"
 conflict="$here/r04_11_negative_conflict.d"
 two_foreign="$here/r04_11_two_foreign_specs.d"
+third_customization="$here/r04_11_third_customization_probe.d"
 
 compilers=()
 command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
@@ -31,6 +32,13 @@ for compiler in "${compilers[@]}"; do
     echo "=== $compiler: external consumer probe ==="
     if ! "$compiler" -c "$consumer" "$probe" -I"$here" -of=/tmp/r04_11_consumer_${compiler}.o; then
         failed=1
+    fi
+
+    echo "=== $compiler: explicit relation-set probe ==="
+    if ! "$compiler" -c "$third_customization" "$probe" -I"$here" -of=/tmp/r04_11_relations_${compiler}.o; then
+        failed=1
+    else
+        echo "PASS: explicit relation set connects two foreign Specs"
     fi
 
     echo "=== $compiler: two-foreign-spec capability probe ==="
