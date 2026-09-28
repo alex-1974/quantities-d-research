@@ -18,6 +18,7 @@ dimension_key="$here/r04_11_dimension_key_probe.d"
 canonical_algebra="$here/r04_11_canonical_dimension_algebra_probe.d"
 unit_algebra="$here/r04_11_unit_algebra_probe.d"
 result_spec_rescale="$here/r04_11_result_spec_rescale_probe.d"
+product_api="$here/r04_11_product_api_probe.d"
 
 compilers=()
 command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
@@ -100,6 +101,17 @@ for compiler in "${compilers[@]}"; do
         failed=1
     fi
     rm -f "$rescale_exe"
+
+    echo "=== $compiler: product API contract ==="
+    product_api_exe="/tmp/r04_11_product_api_${compiler}"
+    if ! "$compiler" -unittest "$product_api" -I"$here" -of="$product_api_exe"; then
+        failed=1
+    elif ! "$product_api_exe"; then
+        failed=1
+    else
+        echo "PASS: derived product API contract"
+    fi
+    rm -f "$product_api_exe"
 
     echo "=== $compiler: scaled integral product range ==="
     if ! "$compiler" -c "$scaled_mul_rep" -I"$here" -of=/tmp/r04_11_scaled_mul_${compiler}.o; then
