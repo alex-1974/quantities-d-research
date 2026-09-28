@@ -374,3 +374,42 @@ selected K>1 cases whose unscaled endpoint magnitudes remain within the probe's
 explicit rescale precondition. A general 128x64 rescale oracle is not required
 to establish the present safety invariant and should only be added if later
 research needs it.
+
+## Dimension representation evidence
+
+The dimension-model, open-canonicalization, and structural-semantics probes now
+pass on both baseline compilers (DMD and LDC).
+
+The evidence supports separating two concerns:
+
+1. **Canonical native representation**
+   Core-created dimensions should normalize their term set before the concrete
+   D type is formed. This preserves native type identity for mathematically
+   equal dimensions, so common internal gates can use `is(A == B)`.
+
+2. **Structural dimension protocol**
+   Dimension semantics can also be recognized by compile-time structure rather
+   than nominal ownership. A foreign type that deliberately exposes the
+   dimension protocol can participate in semantic equality without inheriting
+   from a core type or registering itself in a central table.
+
+The current research model therefore does not require a choice between nominal
+and structural semantics. Canonical native dimensions can use cheap nominal
+identity, while a structural trait layer can provide an interoperability
+boundary for external dimension-like types.
+
+A further important result is that normalization must happen **before** the
+concrete dimension type is instantiated. Normalizing only an internal member of
+`Dimension!(Terms...)` does not make differently ordered template argument
+lists the same D type.
+
+The open canonicalization probe also demonstrates that a core-owned global
+`TagRank` table is not inherently required. A tag can instead describe a
+stable compile-time ordering key, allowing consumer-defined independent
+axes without modifying the quantities-d core. Whether such keys should become
+part of the public protocol remains an API decision; the mechanism is proven,
+not yet selected.
+
+Open question: measure template-instantiation / compile-time cost of structural
+semantic equality versus already-canonical native type identity before choosing
+how widely the structural path should be used internally.
