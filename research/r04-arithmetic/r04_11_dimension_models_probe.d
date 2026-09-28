@@ -80,7 +80,7 @@ template TagRank(Tag)
     else static assert(0, "unranked dimension tag in research probe");
 }
 
-template OpenDimension(Terms...)
+struct OpenDimension(Terms...)
 {
     alias TermsList = AliasSeq!Terms;
 }
