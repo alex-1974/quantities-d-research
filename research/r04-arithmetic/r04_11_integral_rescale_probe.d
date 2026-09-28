@@ -20,7 +20,7 @@ template gcd(long A, long B)
         enum gcd = gcd!(b, a % b);
 }
 
-template ReducedRatio(long N, long D)
+struct ReducedRatio(long N, long D)
 {
     static assert(D != 0);
     enum long sign = D < 0 ? -1 : 1;
