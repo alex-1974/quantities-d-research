@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+here="$(cd "$(dirname "$0")" && pwd)"
+probe="$here/r04_11_probe.d"
+consumer="$here/r04_11_consumer_probe.d"
+negative="$here/r04_11_negative_no_relation.d"
+
+compilers=()
+command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
+if command -v ldc2 >/dev/null 2>&1; then
+    compilers+=(ldc2)
+elif command -v ldc >/dev/null 2>&1; then
+    compilers+=(ldc)
+fi
+
+if (("${#compilers[@]}" == 0)); then
+    echo "ERROR: neither dmd nor ldc2/ldc found" >&2
+    exit 2
+fi
+
+failed=0
+for compiler in "${compilers[@]}"; do
+    echo "=== $compiler: positive core probe ==="
+    if ! "$compiler" -c "$probe" -of=/tmp/r04_11_probe_${compiler}.o; then
+        failed=1
+    fi
+
+    echo "=== $compiler: external consumer probe ==="
+    if ! "$compiler" -c "$consumer" "$probe" -I"$here" -of=/tmp/r04_11_consumer_${compiler}.o; then
+        failed=1
+    fi
+
+    echo "=== $compiler: negative no-relation probe ==="
+    if "$compiler" -c "$negative" "$probe" -I"$here" -of=/tmp/r04_11_negative_${compiler}.o >/tmp/r04_11_negative_${compiler}.log 2>&1; then
+        echo "FAIL: negative probe unexpectedly compiled" >&2
+        failed=1
+    else
+        echo "PASS: missing semantic relation rejected"
+    fi
+done
+
+exit "$failed"
