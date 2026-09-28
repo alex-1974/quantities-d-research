@@ -19,10 +19,16 @@ for compiler in dmd ldc2; do
             timefile="/tmp/r04_11_cost_${compiler}_${depth}_${mode}.time"
 
             echo "=== $compiler $depth $mode ==="
+            if [[ "$compiler" == "ldc2" ]]; then
+                version_args=("--d-version=$depth" "--d-version=$mode")
+            else
+                version_args=("-version=$depth" "-version=$mode")
+            fi
+
             if ! /usr/bin/time -f 'elapsed=%e user=%U sys=%S maxrss_kb=%M' \
                 -o "$timefile" \
                 "$compiler" -c "$probe" \
-                "-version=$depth" "-version=$mode" \
+                "${version_args[@]}" \
                 -of="$out"
             then
                 failed=1
