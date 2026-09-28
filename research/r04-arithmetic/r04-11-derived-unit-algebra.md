@@ -484,3 +484,56 @@ does not change mathematical identity within one build. Before production,
 ABI / serialized-type-name stability should be treated separately from
 mathematical correctness; quantities-d should not promise stable ABI based on
 internal template mangling unless explicitly designed for it.
+
+### ResultSpec canonical rescale integration
+
+The result-spec canonical-rescale probe now passes on both baseline compilers.
+It closes the R04.11 chain from semantic result selection through canonical
+storage:
+
+1. Spec algebra selects a unique semantic ResultSpec.
+2. Dimension algebra derives the mathematical result dimension.
+3. Unit algebra derives the mathematical result unit and exact rational scale
+   from the operands' canonical units.
+4. ResultSpec.CanonicalUnit defines the storage unit of the resulting Quantity.
+5. CanonicalRescale = MathResultUnit.Scale / ResultSpec.CanonicalUnit.Scale.
+6. Rep / exactness gates decide whether a direct operator is total and safe.
+
+Reference case:
+
+- Length canonical unit: metre
+- mathematical Length x Length unit: square metre
+- Area canonical unit: square metre -> rescale 1
+- AreaKm2 canonical unit: square kilometre -> rescale 1/1_000_000
+
+For integral storage, a reduced canonical-rescale denominator other than 1 is
+not exact for every representable product value. Therefore a direct integral
+operator must not silently produce an integral Quantity in such a ResultSpec.
+For example, 3 m * 4 m = 12 m2 = 0.000012 km2, while 1000 m * 1000 m = 1 km2
+is exactly representable. This establishes the distinction between a
+value-independent direct-operator gate and a value-dependent named exact /
+checked path.
+
+**R04.11 direct integral product contract:** a direct Quantity x Quantity
+operator may compile only when all of the following hold:
+
+1. semantic gate: exactly one ResultSpec is selected;
+2. dimension gate: ResultSpec.Dimension equals the product dimension;
+3. unit gate: mathematical result unit and ResultSpec.CanonicalUnit share that
+   dimension;
+4. product-range gate: a built-in ResultRep contains the complete mathematical
+   product range of the operand Reps;
+5. canonical-rescale exactness gate: the reduced rescale denominator is 1 for
+   integral storage;
+6. post-rescale range gate: the integer rescale multiplier still fits the
+   ResultRep for every operand pair.
+
+Extended invariant:
+
+> If a direct integral quantities-d product operator compiles, neither overflow
+> nor canonical-unit truncation is possible for any value representable by its
+> operand Reps.
+
+Fractional canonical rescaling does not make the semantic relation invalid; it
+only removes the total direct integral operator. A future explicit exact /
+checked product API can still succeed for selected values.
