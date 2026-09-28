@@ -14,6 +14,7 @@ scaled_mul_rep="$here/r04_11_scaled_mul_rep_probe.d"
 dimension_models="$here/r04_11_dimension_models_probe.d"
 open_canonicalization="$here/r04_11_open_canonicalization_probe.d"
 structural_dimension="$here/r04_11_structural_dimension_probe.d"
+dimension_key="$here/r04_11_dimension_key_probe.d"
 
 compilers=()
 command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
@@ -60,6 +61,15 @@ for compiler in "${compilers[@]}"; do
     else
         echo "PASS: structural dimension semantics probe"
     fi
+
+    echo "=== $compiler: dimension ordering key ==="
+    key_exe="/tmp/r04_11_dimension_key_${compiler}"
+    if ! "$compiler" "$dimension_key" -I"$here" -of="$key_exe"; then
+        failed=1
+    elif ! "$key_exe"; then
+        failed=1
+    fi
+    rm -f "$key_exe"
 
     echo "=== $compiler: scaled integral product range ==="
     if ! "$compiler" -c "$scaled_mul_rep" -I"$here" -of=/tmp/r04_11_scaled_mul_${compiler}.o; then
