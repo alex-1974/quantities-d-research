@@ -569,3 +569,72 @@ wrappers over the shared internal carrier without forcing their failure enums
 into one common status type.
 
 Decision direction: **share mechanics, preserve semantic status domains.**
+
+### Production-readiness assessment after end-to-end Quantity product probe
+
+The production-shaped Quantity product integration probe passes on both DMD
+2.111 and LDC 1.41. The research evidence is now sufficient to define a first
+production slice, but not to claim the full derived-arithmetic design complete.
+
+#### Ready to promote conceptually
+
+- direct integral Quantity x Quantity only when semantic, dimension, unit,
+  representation, exact-rescale, and post-rescale range gates are all total;
+- Length x Length -> Area as the first reference semantic relation;
+- exact rational derived-unit scale propagation;
+- canonical-result-unit rescaling rather than raw reinterpretation;
+- value-dependent named exact multiplication for cases where the semantic
+  relation is valid but the direct integral operator is not total;
+- shared internal constructive exact-arithmetic carrier while preserving
+  operation-specific failure domains;
+- no broad ArithmeticStatus;
+- no exhaustive physics catalogue requirement.
+
+#### Production dependencies still required before the first PR
+
+1. **Canonical open dimension representation in the production core.**
+   The research model is proven, including normalization-before-type-formation,
+   automatic fullyQualifiedName ordering, native type equality, and consumer
+   extension. Production still uses a nominal LengthDimension only.
+
+2. **Generic unit algebra over production ExactRatio.**
+   MulUnit, DivUnit, and PowUnit must use overflow-safe/reduction-safe exact
+   ratio composition rather than the simplified research arithmetic.
+
+3. **Final ProductResultSpec resolution API.**
+   Member ProductWith / reverse hook / explicit relation-set behavior and
+   conflict rules must be represented by one normative trait. Two foreign Specs
+   require the explicit relation-set escape hatch; silent override is rejected.
+
+4. **Full scaled-product ResultRep integration.**
+   The separate exact-range research proves the safety direction, but the
+   production operator must use one normative selector for the complete
+   expression lhs * rhs * integerRescale. The end-to-end probe intentionally
+   admits only rescale == 1 on its direct path.
+
+#### Recommended first production slice
+
+Keep the first production change deliberately narrow:
+
+- introduce canonical open Dimension primitives and algebra;
+- introduce generic derived Unit algebra;
+- add Area / SquareMetre as the first standard derived quantity;
+- add the normative product semantic trait;
+- add direct integral Quantity x Quantity for the total rescale==1 reference
+  path first;
+- add exactMul only after its ResultRep/rescale implementation reuses the same
+  normative product pipeline and preserves the established exact/inexact/
+  overflow contract;
+- retain all non-total cases as compile-time rejection until their named path is
+  fully implemented.
+
+This ordering avoids merging a partially duplicated arithmetic pipeline and
+keeps the existing invariant intact:
+
+> If a direct integral quantities-d arithmetic operator compiles, overflow and
+> semantic/canonical-unit truncation are impossible for every representable
+> operand value.
+
+R04.11 itself should remain open until the production slice has passed DMD/LDC
+debug and release tests, compile-negative gates, external-consumer tests, and a
+final review against the research invariants.
