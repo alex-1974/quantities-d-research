@@ -186,3 +186,55 @@ The following remain open and require dedicated probes before production use:
 The present evidence is therefore sufficient to keep the two-sided hook model
 as a serious candidate, but not yet sufficient to promote it to the production
 API.
+
+## Compiler evidence — conflict handling and orphan-relation limit
+
+Observed with both baseline compilers (DMD and LDC):
+
+- positive core probe: PASS
+- external consumer-owned RHS hook: PASS
+- conflicting two-sided hooks: correctly rejected at compile time
+- missing semantic relation: correctly rejected
+- two foreign Specs: current member-hook model exposes the expected extension limit
+
+### Confirmed property: conflict safety
+
+If both operands provide a multiplication relation and the two hooks resolve to
+different ResultSpecs, the dispatcher now rejects the program with a compile-time
+error instead of silently preferring one side. This is required for deterministic
+semantic ownership.
+
+If both hooks resolve to the same ResultSpec, that case remains admissible in the
+candidate design.
+
+### Confirmed limitation: orphan relations
+
+A third-party consumer cannot define a natural operator relation between two
+pre-existing Specs when it owns neither operand type. Member customization has no
+neutral location in which such a relation can be declared.
+
+This is analogous to an orphan-relation problem:
+
+    library A owns SpecA
+    library B owns SpecB
+    application C wants SpecA * SpecB -> ResultC
+
+With member hooks alone, application C cannot add the relation without wrapping or
+modifying one of the operand Specs.
+
+This is now a documented design limitation, not a compiler uncertainty.
+
+### Next research question
+
+Before production promotion, R04.11 must compare candidate third customization
+mechanisms that preserve the existing two-parameter Quantity identity:
+
+- explicit algebra/policy module or relation set discovered at compile time;
+- UFCS/free-template customization where import lookup can be made deterministic;
+- mixin-provided relation declarations;
+- opt-in wrapper/context types around arithmetic expressions;
+- deliberate acceptance of the orphan-relation restriction.
+
+A central runtime registry, string-based lookup, and adding an Algebra parameter to
+`Quantity!(Spec, Rep)` remain outside the preferred design because they would either
+add runtime machinery or change type identity/template cost.
