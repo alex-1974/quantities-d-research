@@ -5,6 +5,8 @@ here="$(cd "$(dirname "$0")" && pwd)"
 probe="$here/r04_11_probe.d"
 consumer="$here/r04_11_consumer_probe.d"
 negative="$here/r04_11_negative_no_relation.d"
+conflict="$here/r04_11_negative_conflict.d"
+two_foreign="$here/r04_11_two_foreign_specs.d"
 
 compilers=()
 command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
@@ -29,6 +31,21 @@ for compiler in "${compilers[@]}"; do
     echo "=== $compiler: external consumer probe ==="
     if ! "$compiler" -c "$consumer" "$probe" -I"$here" -of=/tmp/r04_11_consumer_${compiler}.o; then
         failed=1
+    fi
+
+    echo "=== $compiler: two-foreign-spec capability probe ==="
+    if ! "$compiler" -c "$two_foreign" "$probe" -I"$here" -of=/tmp/r04_11_two_foreign_${compiler}.o; then
+        failed=1
+    else
+        echo "PASS: current member hooks expose the two-foreign-spec limit"
+    fi
+
+    echo "=== $compiler: negative conflicting-hooks probe ==="
+    if "$compiler" -c "$conflict" "$probe" -I"$here" -of=/tmp/r04_11_conflict_${compiler}.o >/tmp/r04_11_conflict_${compiler}.log 2>&1; then
+        echo "FAIL: conflicting semantic hooks unexpectedly compiled" >&2
+        failed=1
+    else
+        echo "PASS: conflicting semantic hooks rejected"
     fi
 
     echo "=== $compiler: negative no-relation probe ==="
