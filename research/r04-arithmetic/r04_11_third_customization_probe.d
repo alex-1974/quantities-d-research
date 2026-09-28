@@ -64,10 +64,27 @@ static assert(is(MulResult!(LibraryASpec, LibraryBSpec) == void));
 static assert(is(MulResultWith!(ConsumerRelations, LibraryASpec, LibraryBSpec)
                  == ConsumerResult));
 
-alias ExternalModel = ProductModel!(
-    LibraryASpec,
-    LibraryBSpec,
-    MulResultWith!(ConsumerRelations, LibraryASpec, LibraryBSpec));
+template ProductModelWith(Relations, Lhs, Rhs)
+{
+    alias ResultSpec = MulResultWith!(Relations, Lhs, Rhs);
+    static assert(!is(ResultSpec == void));
+
+    alias ResultDimension =
+        MulDimension!(Lhs.Dimension, Rhs.Dimension);
+    alias MathematicalUnit =
+        MulUnit!(Lhs.CanonicalUnit, Rhs.CanonicalUnit);
+
+    static assert(is(ResultSpec.Dimension == ResultDimension));
+    static assert(is(MathematicalUnit.DimensionType == ResultDimension));
+    static assert(is(ResultSpec.CanonicalUnit.DimensionType == ResultDimension));
+
+    alias Rescale = DivRatio!(
+        MathematicalUnit.ScaleType,
+        ResultSpec.CanonicalUnit.ScaleType);
+}
+
+alias ExternalModel =
+    ProductModelWith!(ConsumerRelations, LibraryASpec, LibraryBSpec);
 
 static assert(is(ExternalModel.ResultSpec == ConsumerResult));
 static assert(ExternalModel.Rescale.numerator == 1);
