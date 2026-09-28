@@ -413,3 +413,36 @@ not yet selected.
 Open question: measure template-instantiation / compile-time cost of structural
 semantic equality versus already-canonical native type identity before choosing
 how widely the structural path should be used internally.
+
+### Dimension equality compile-time cost
+
+A scaled compile-time benchmark compared canonical native type identity with
+structural semantic equality. Each case instantiated 4096 distinct dimension
+queries to prevent one memoized comparison from dominating the result.
+
+Representative 7-term results:
+
+| Compiler | Native elapsed | Structural elapsed | Native max RSS | Structural max RSS |
+| --- | ---: | ---: | ---: | ---: |
+| DMD | 0.55 s | 9.58 s | 305560 KiB | 5003680 KiB |
+| LDC | 0.64 s | 11.35 s | 405060 KiB | 5815836 KiB |
+
+The structural path also showed strong growth as term count increased, while the
+native canonical-type path remained comparatively flat. The benchmark is a
+stress probe rather than a prediction of ordinary consumer build cost, but the
+direction and magnitude are consistent across both baseline compilers.
+
+**R04.11 decision:** canonicalize dimensions before forming their concrete D
+type, then use native type identity for ordinary internal dimension equality
+gates. Do not make structural `sameDimension` the default arithmetic path.
+
+Structural protocol detection remains useful as an explicit interoperability,
+validation, or adaptation boundary for foreign dimension-like types. Such a
+foreign representation should be normalized/adapted into the canonical core
+representation once, rather than repeatedly paying structural equality cost
+through arithmetic operations.
+
+This preserves both goals:
+
+- open consumer participation at the boundary;
+- cheap canonical nominal identity inside quantities-d arithmetic.
