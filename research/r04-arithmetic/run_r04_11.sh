@@ -20,6 +20,7 @@ unit_algebra="$here/r04_11_unit_algebra_probe.d"
 result_spec_rescale="$here/r04_11_result_spec_rescale_probe.d"
 product_api="$here/r04_11_product_api_probe.d"
 exact_result="$here/r04_11_exact_arithmetic_result_probe.d"
+quantity_product="$here/r04_11_quantity_product_integration_probe.d"
 
 compilers=()
 command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
@@ -124,6 +125,17 @@ for compiler in "${compilers[@]}"; do
         echo "PASS: shared exact arithmetic result carrier"
     fi
     rm -f "$exact_result_exe"
+
+    echo "=== $compiler: Quantity product integration ==="
+    quantity_product_exe="/tmp/r04_11_quantity_product_${compiler}"
+    if ! "$compiler" -unittest "$quantity_product" -I"$here" -of="$quantity_product_exe"; then
+        failed=1
+    elif ! "$quantity_product_exe"; then
+        failed=1
+    else
+        echo "PASS: Quantity product integration contract"
+    fi
+    rm -f "$quantity_product_exe"
 
     echo "=== $compiler: scaled integral product range ==="
     if ! "$compiler" -c "$scaled_mul_rep" -I"$here" -of=/tmp/r04_11_scaled_mul_${compiler}.o; then
