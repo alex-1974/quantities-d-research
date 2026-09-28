@@ -1,0 +1,343 @@
+=== FILE SIZE ===
+/home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-b 935960
+/home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-c 916736
+/home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-b.stripped 672088
+/home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-c.stripped 660200
+
+=== SECTION DIFF (unstripped) ===
+--- /home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-c.sections.txt	2026-09-27 08:51:22.942232625 +0200
++++ /home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-b.sections.txt	2026-09-27 08:51:22.628231927 +0200
+@@ -1,36 +1,36 @@
+-/home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-c  :
++/home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-b  :
+ section                size     addr
+ .note.gnu.build-id       36      904
+ .interp                  28      940
+-.gnu.hash             18844      968
+-.dynsym               53952    19816
+-.dynstr              145283    73768
+-.gnu.version           4496   219052
+-.gnu.version_r          208   223552
+-.rela.dyn             62736   223760
+-.rela.plt              2304   286496
+-.init                    27   290816
+-.plt                   1552   290848
+-.plt.got                  8   292400
+-.text                230592   292416
+-.fini                    13   523008
+-.rodata               13344   524288
+-.eh_frame_hdr         12164   537632
+-.eh_frame             42832   549800
+-.gcc_except_table      1520   592632
+-.note.gnu.property       32   594152
+-.note.ABI-tag            32   594184
+-.tdata                   16   599152
+-.tbss                   496   599168
+-.init_array              48   599168
+-.fini_array              16   599216
+-.data.rel.ro           1152   599232
+-.dynamic                544   600384
+-.got                   1184   600928
+-.data                 59488   602112
+-minfo                   224   661600
+-.bss                   9856   661824
++.gnu.hash             19076      968
++.dynsym               55344    20048
++.dynstr              151224    75392
++.gnu.version           4612   226616
++.gnu.version_r          208   231232
++.rela.dyn             65040   231440
++.rela.plt              2304   296480
++.init                    27   299008
++.plt                   1552   299040
++.plt.got                  8   300592
++.text                231408   300608
++.fini                    13   532016
++.rodata               13328   532480
++.eh_frame_hdr         12372   545808
++.eh_frame             43480   558184
++.gcc_except_table      1520   601664
++.note.gnu.property       32   603184
++.note.ABI-tag            32   603216
++.tdata                   16   607344
++.tbss                   496   607360
++.init_array              48   607360
++.fini_array              16   607408
++.data.rel.ro           1152   607424
++.dynamic                544   608576
++.got                   1184   609120
++.data                 63184   610304
++minfo                   224   673488
++.bss                   9856   673728
+ .comment                 51        0
+-Total                663078
++Total                678415
+ 
+ 
+
+=== SECTION DIFF (stripped) ===
+--- /home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-c.stripped.sections.txt	2026-09-27 08:51:22.943232628 +0200
++++ /home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-b.stripped.sections.txt	2026-09-27 08:51:22.629231929 +0200
+@@ -1,36 +1,36 @@
+-/home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-c.stripped  :
++/home/alexander/Programmiersprachen/dlang/d-geospatial-workspace/libs/quantities-d/research/r09-b-vs-c-cost/results/dmd-inspect/probe-b.stripped  :
+ section                size     addr
+ .note.gnu.build-id       36      904
+ .interp                  28      940
+-.gnu.hash             18844      968
+-.dynsym               53952    19816
+-.dynstr              145283    73768
+-.gnu.version           4496   219052
+-.gnu.version_r          208   223552
+-.rela.dyn             62736   223760
+-.rela.plt              2304   286496
+-.init                    27   290816
+-.plt                   1552   290848
+-.plt.got                  8   292400
+-.text                230592   292416
+-.fini                    13   523008
+-.rodata               13344   524288
+-.eh_frame_hdr         12164   537632
+-.eh_frame             42832   549800
+-.gcc_except_table      1520   592632
+-.note.gnu.property       32   594152
+-.note.ABI-tag            32   594184
+-.tdata                   16   599152
+-.tbss                   496   599168
+-.init_array              48   599168
+-.fini_array              16   599216
+-.data.rel.ro           1152   599232
+-.dynamic                544   600384
+-.got                   1184   600928
+-.data                 59488   602112
+-minfo                   224   661600
+-.bss                   9856   661824
++.gnu.hash             19076      968
++.dynsym               55344    20048
++.dynstr              151224    75392
++.gnu.version           4612   226616
++.gnu.version_r          208   231232
++.rela.dyn             65040   231440
++.rela.plt              2304   296480
++.init                    27   299008
++.plt                   1552   299040
++.plt.got                  8   300592
++.text                231408   300608
++.fini                    13   532016
++.rodata               13328   532480
++.eh_frame_hdr         12372   545808
++.eh_frame             43480   558184
++.gcc_except_table      1520   601664
++.note.gnu.property       32   603184
++.note.ABI-tag            32   603216
++.tdata                   16   607344
++.tbss                   496   607360
++.init_array              48   607360
++.fini_array              16   607408
++.data.rel.ro           1152   607424
++.dynamic                544   608576
++.got                   1184   609120
++.data                 63184   610304
++minfo                   224   673488
++.bss                   9856   673728
+ .comment                 51        0
+-Total                663078
++Total                678415
+ 
+ 
+
+=== LARGEST B SYMBOLS ===
+000000000006a098 000000000000041b W core.thread.osthread.Thread.start()
+000000000009c2b0 0000000000000420 V initializer for core.runtime.DefaultTraceInfo
+00000000000616c4 0000000000000427 W core.internal.backtrace.dwarf.readLineNumberProgram(ref const(ubyte)[]).readSequence!(core.internal.backtrace.dwarf.readLineNumberProgram(ref const(ubyte)[]).readFileNameEntry(ref const(ubyte)[])).readSequence(ref const(ubyte)[])
+00000000000a5fa0 0000000000000440 V initializer for core.internal.gc.impl.conservative.gc.Gcx
+000000000005fc34 0000000000000442 W core.internal.backtrace.dwarf.runStateMachine(ref const(core.internal.backtrace.dwarf.LineNumberProgram), scope bool(const(void)*, core.internal.backtrace.dwarf.LocationInfo, bool) nothrow @nogc delegate)
+000000000005a2fc 0000000000000455 W rt.minfo.ModuleGroup.genCyclePath(ulong, ulong, int[][]).shortest(ulong, ulong)
+000000000005a754 000000000000045d W rt.minfo.ModuleGroup.sortCtors(immutable(char)[])
+0000000000051bb8 000000000000046e W _aaGetX
+000000000005ce88 000000000000047b W core.exception.ArrayIndexError.this(ulong, ulong, immutable(char)[], ulong, object.Throwable)
+0000000000094b60 00000000000004a0 d _GLOBAL_OFFSET_TABLE_
+000000000007542c 00000000000004e1 W core.internal.gc.impl.conservative.gc.Pool.initialize(ulong, bool)
+00000000000808ac 0000000000000512 W core.internal.gc.impl.conservative.gc.Gcx.mark!(false, false, false).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(false).ScanRange)
+000000000006efbc 0000000000000522 W core.internal.gc.impl.conservative.gc.ConservativeGC.reallocNoSync(void*, ulong, ref uint, ref ulong, const(TypeInfo))
+000000000007c56c 0000000000000545 W core.cpuid.cpuid_initialization()
+0000000000079824 0000000000000547 W core.internal.gc.impl.conservative.gc.Gcx.mark!(false, true, true).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(false).ScanRange)
+000000000007fbfc 000000000000054a W core.internal.gc.impl.conservative.gc.Gcx.mark!(false, false, true).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(false).ScanRange)
+0000000000050b80 0000000000000552 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseMangledName(out bool, bool, ulong)
+000000000004f3bc 0000000000000568 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseIntegerValue(out bool, scope core.demangle.BufSlice, char)
+000000000007cabc 0000000000000569 W core.cpuid.cpuidX86()
+0000000000074bb0 0000000000000584 W core.internal.gc.impl.conservative.gc.Gcx.__xopEquals(ref const(core.internal.gc.impl.conservative.gc.Gcx)) const
+0000000000076238 0000000000000584 W core.internal.gc.impl.conservative.gc.Pool.setPointerBitmap(void*, ulong, ulong, const(TypeInfo), uint)
+000000000005ef84 00000000000005ab W core.internal.backtrace.dwarf.traceHandlerOpApplyImpl(ulong, scope const(void)*(ulong) delegate, scope const(char)[](ulong) delegate, scope int(ref ulong, ref const(char[])) delegate)
+000000000004f924 00000000000005e1 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseTemplateArgs(out bool)
+00000000000a5430 0000000000000608 V initializer for core.internal.backtrace.dwarf.TraceInfoBuffer
+000000000006c2a8 000000000000062c W core.internal.parseoptions.parse!(ulong).parse(const(char)[], ref inout(char)[], ref ulong, const(char)[], bool)
+00000000000801b8 00000000000006b2 W core.internal.gc.impl.conservative.gc.Gcx.mark!(true, false, false).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(true).ScanRange)
+0000000000079170 00000000000006b3 W core.internal.gc.impl.conservative.gc.Gcx.mark!(true, true, true).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(true).ScanRange)
+000000000007f4c4 00000000000006f7 W core.internal.gc.impl.conservative.gc.Gcx.mark!(true, false, true).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(true).ScanRange)
+000000000004dca8 000000000000074a W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseFuncArguments(out bool)
+000000000006b81c 00000000000007f6 W core.internal.parseoptions.parseOptions!(core.gc.config.Config).parseOptions(ref core.gc.config.Config, immutable(char)[])
+00000000000a0300 0000000000000801 D core.internal.gc.impl.conservative.gc.Gcx.binTable
+000000000004afb4 0000000000000823 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseReal(out bool)
+000000000005d304 0000000000000897 W core.exception.ArraySliceError.this(ulong, ulong, ulong, immutable(char)[], ulong, object.Throwable)
+00000000000605b4 0000000000000ab1 W core.internal.backtrace.dwarf.readLineNumberProgram(ref const(ubyte)[])
+00000000000722d8 0000000000000ad3 W core.internal.gc.impl.conservative.gc.Gcx.sweep()
+000000000004e7a8 0000000000000c08 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseValue(out bool, scope core.demangle.BufSlice, char)
+0000000000073260 0000000000000e48 W core.internal.gc.impl.conservative.gc.Gcx.fullcollect(bool, bool)
+000000000004bb78 000000000000175c W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseType(out bool)
+00000000000a1d60 0000000000001e00 D core.internal.gc.impl.conservative.gc.binbase
+0000000000085410 0000000000003054 r __GNU_EH_FRAME_HDR
+
+=== LARGEST C SYMBOLS ===
+0000000000067d60 000000000000041b W core.thread.osthread.Thread.start()
+0000000000099440 0000000000000420 V initializer for core.runtime.DefaultTraceInfo
+000000000005f38c 0000000000000427 W core.internal.backtrace.dwarf.readLineNumberProgram(ref const(ubyte)[]).readSequence!(core.internal.backtrace.dwarf.readLineNumberProgram(ref const(ubyte)[]).readFileNameEntry(ref const(ubyte)[])).readSequence(ref const(ubyte)[])
+00000000000a3120 0000000000000440 V initializer for core.internal.gc.impl.conservative.gc.Gcx
+000000000005d8fc 0000000000000442 W core.internal.backtrace.dwarf.runStateMachine(ref const(core.internal.backtrace.dwarf.LineNumberProgram), scope bool(const(void)*, core.internal.backtrace.dwarf.LocationInfo, bool) nothrow @nogc delegate)
+0000000000057fc4 0000000000000455 W rt.minfo.ModuleGroup.genCyclePath(ulong, ulong, int[][]).shortest(ulong, ulong)
+000000000005841c 000000000000045d W rt.minfo.ModuleGroup.sortCtors(immutable(char)[])
+000000000004f880 000000000000046e W _aaGetX
+000000000005ab50 000000000000047b W core.exception.ArrayIndexError.this(ulong, ulong, immutable(char)[], ulong, object.Throwable)
+0000000000092b60 00000000000004a0 d _GLOBAL_OFFSET_TABLE_
+00000000000730f4 00000000000004e1 W core.internal.gc.impl.conservative.gc.Pool.initialize(ulong, bool)
+000000000007e574 0000000000000512 W core.internal.gc.impl.conservative.gc.Gcx.mark!(false, false, false).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(false).ScanRange)
+000000000006cc84 0000000000000522 W core.internal.gc.impl.conservative.gc.ConservativeGC.reallocNoSync(void*, ulong, ref uint, ref ulong, const(TypeInfo))
+000000000007a234 0000000000000545 W core.cpuid.cpuid_initialization()
+00000000000774ec 0000000000000547 W core.internal.gc.impl.conservative.gc.Gcx.mark!(false, true, true).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(false).ScanRange)
+000000000007d8c4 000000000000054a W core.internal.gc.impl.conservative.gc.Gcx.mark!(false, false, true).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(false).ScanRange)
+000000000004e848 0000000000000552 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseMangledName(out bool, bool, ulong)
+000000000004d084 0000000000000568 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseIntegerValue(out bool, scope core.demangle.BufSlice, char)
+000000000007a784 0000000000000569 W core.cpuid.cpuidX86()
+0000000000072878 0000000000000584 W core.internal.gc.impl.conservative.gc.Gcx.__xopEquals(ref const(core.internal.gc.impl.conservative.gc.Gcx)) const
+0000000000073f00 0000000000000584 W core.internal.gc.impl.conservative.gc.Pool.setPointerBitmap(void*, ulong, ulong, const(TypeInfo), uint)
+000000000005cc4c 00000000000005ab W core.internal.backtrace.dwarf.traceHandlerOpApplyImpl(ulong, scope const(void)*(ulong) delegate, scope const(char)[](ulong) delegate, scope int(ref ulong, ref const(char[])) delegate)
+000000000004d5ec 00000000000005e1 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseTemplateArgs(out bool)
+00000000000a25b0 0000000000000608 V initializer for core.internal.backtrace.dwarf.TraceInfoBuffer
+0000000000069f70 000000000000062c W core.internal.parseoptions.parse!(ulong).parse(const(char)[], ref inout(char)[], ref ulong, const(char)[], bool)
+000000000007de80 00000000000006b2 W core.internal.gc.impl.conservative.gc.Gcx.mark!(true, false, false).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(true).ScanRange)
+0000000000076e38 00000000000006b3 W core.internal.gc.impl.conservative.gc.Gcx.mark!(true, true, true).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(true).ScanRange)
+000000000007d18c 00000000000006f7 W core.internal.gc.impl.conservative.gc.Gcx.mark!(true, false, true).mark(core.internal.gc.impl.conservative.gc.Gcx.ScanRange!(true).ScanRange)
+000000000004b970 000000000000074a W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseFuncArguments(out bool)
+00000000000694e4 00000000000007f6 W core.internal.parseoptions.parseOptions!(core.gc.config.Config).parseOptions(ref core.gc.config.Config, immutable(char)[])
+000000000009d490 0000000000000801 D core.internal.gc.impl.conservative.gc.Gcx.binTable
+0000000000048c7c 0000000000000823 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseReal(out bool)
+000000000005afcc 0000000000000897 W core.exception.ArraySliceError.this(ulong, ulong, ulong, immutable(char)[], ulong, object.Throwable)
+000000000005e27c 0000000000000ab1 W core.internal.backtrace.dwarf.readLineNumberProgram(ref const(ubyte)[])
+000000000006ffa0 0000000000000ad3 W core.internal.gc.impl.conservative.gc.Gcx.sweep()
+000000000004c470 0000000000000c08 W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseValue(out bool, scope core.demangle.BufSlice, char)
+0000000000070f28 0000000000000e48 W core.internal.gc.impl.conservative.gc.Gcx.fullcollect(bool, bool)
+0000000000049840 000000000000175c W core.demangle.Demangle!(core.demangle.NoHooks).Demangle.parseType(out bool)
+000000000009eef0 0000000000001e00 D core.internal.gc.impl.conservative.gc.binbase
+0000000000083420 0000000000002f84 r __GNU_EH_FRAME_HDR
+
+=== SYMBOL COUNTS ===
+B total unique: 2747
+C total unique: 2689
+B-only: 82
+C-only: 24
+
+=== B-ONLY QUANTITY/UNIT SYMBOLS ===
+app_b.QuantityB!(common.HeightSpec, common.InternationalFoot, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.HeightSpec, common.InternationalFoot, double).QuantityB)) const
+app_b.QuantityB!(common.HeightSpec, common.InternationalFoot, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.HeightSpec, common.InternationalFoot, double).QuantityB))
+app_b.QuantityB!(common.HeightSpec, common.Kilometre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.HeightSpec, common.Kilometre, double).QuantityB)) const
+app_b.QuantityB!(common.HeightSpec, common.Kilometre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.HeightSpec, common.Kilometre, double).QuantityB))
+app_b.QuantityB!(common.HeightSpec, common.Metre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.HeightSpec, common.Metre, double).QuantityB)) const
+app_b.QuantityB!(common.HeightSpec, common.Metre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.HeightSpec, common.Metre, double).QuantityB))
+app_b.QuantityB!(common.HeightSpec, common.Millimetre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.HeightSpec, common.Millimetre, double).QuantityB)) const
+app_b.QuantityB!(common.HeightSpec, common.Millimetre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.HeightSpec, common.Millimetre, double).QuantityB))
+app_b.QuantityB!(common.HeightSpec, common.USSurveyFoot, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.HeightSpec, common.USSurveyFoot, double).QuantityB)) const
+app_b.QuantityB!(common.HeightSpec, common.USSurveyFoot, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.HeightSpec, common.USSurveyFoot, double).QuantityB))
+app_b.QuantityB!(common.LengthSpec, common.InternationalFoot, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LengthSpec, common.InternationalFoot, double).QuantityB)) const
+app_b.QuantityB!(common.LengthSpec, common.InternationalFoot, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LengthSpec, common.InternationalFoot, double).QuantityB))
+app_b.QuantityB!(common.LengthSpec, common.Kilometre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LengthSpec, common.Kilometre, double).QuantityB)) const
+app_b.QuantityB!(common.LengthSpec, common.Kilometre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LengthSpec, common.Kilometre, double).QuantityB))
+app_b.QuantityB!(common.LengthSpec, common.Metre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LengthSpec, common.Metre, double).QuantityB)) const
+app_b.QuantityB!(common.LengthSpec, common.Metre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LengthSpec, common.Metre, double).QuantityB))
+app_b.QuantityB!(common.LengthSpec, common.Millimetre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LengthSpec, common.Millimetre, double).QuantityB)) const
+app_b.QuantityB!(common.LengthSpec, common.Millimetre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LengthSpec, common.Millimetre, double).QuantityB))
+app_b.QuantityB!(common.LengthSpec, common.USSurveyFoot, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LengthSpec, common.USSurveyFoot, double).QuantityB)) const
+app_b.QuantityB!(common.LengthSpec, common.USSurveyFoot, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LengthSpec, common.USSurveyFoot, double).QuantityB))
+app_b.QuantityB!(common.LinearResolutionSpec, common.InternationalFoot, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.InternationalFoot, double).QuantityB)) const
+app_b.QuantityB!(common.LinearResolutionSpec, common.InternationalFoot, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.InternationalFoot, double).QuantityB))
+app_b.QuantityB!(common.LinearResolutionSpec, common.Kilometre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.Kilometre, double).QuantityB)) const
+app_b.QuantityB!(common.LinearResolutionSpec, common.Kilometre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.Kilometre, double).QuantityB))
+app_b.QuantityB!(common.LinearResolutionSpec, common.Metre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.Metre, double).QuantityB)) const
+app_b.QuantityB!(common.LinearResolutionSpec, common.Metre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.Metre, double).QuantityB))
+app_b.QuantityB!(common.LinearResolutionSpec, common.Millimetre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.Millimetre, double).QuantityB)) const
+app_b.QuantityB!(common.LinearResolutionSpec, common.Millimetre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.Millimetre, double).QuantityB))
+app_b.QuantityB!(common.LinearResolutionSpec, common.USSurveyFoot, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.USSurveyFoot, double).QuantityB)) const
+app_b.QuantityB!(common.LinearResolutionSpec, common.USSurveyFoot, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.LinearResolutionSpec, common.USSurveyFoot, double).QuantityB))
+app_b.QuantityB!(common.RadiusSpec, common.InternationalFoot, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.RadiusSpec, common.InternationalFoot, double).QuantityB)) const
+app_b.QuantityB!(common.RadiusSpec, common.InternationalFoot, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.RadiusSpec, common.InternationalFoot, double).QuantityB))
+app_b.QuantityB!(common.RadiusSpec, common.Kilometre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.RadiusSpec, common.Kilometre, double).QuantityB)) const
+app_b.QuantityB!(common.RadiusSpec, common.Kilometre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.RadiusSpec, common.Kilometre, double).QuantityB))
+app_b.QuantityB!(common.RadiusSpec, common.Metre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.RadiusSpec, common.Metre, double).QuantityB)) const
+app_b.QuantityB!(common.RadiusSpec, common.Metre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.RadiusSpec, common.Metre, double).QuantityB))
+app_b.QuantityB!(common.RadiusSpec, common.Millimetre, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.RadiusSpec, common.Millimetre, double).QuantityB)) const
+app_b.QuantityB!(common.RadiusSpec, common.Millimetre, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.RadiusSpec, common.Millimetre, double).QuantityB))
+app_b.QuantityB!(common.RadiusSpec, common.USSurveyFoot, double).QuantityB.__xopEquals(ref const(app_b.QuantityB!(common.RadiusSpec, common.USSurveyFoot, double).QuantityB)) const
+app_b.QuantityB!(common.RadiusSpec, common.USSurveyFoot, double).QuantityB.__xtoHash(ref const(app_b.QuantityB!(common.RadiusSpec, common.USSurveyFoot, double).QuantityB))
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10HeightSpecTSQv10MillimetreTdZQBy
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10HeightSpecTSQv12USSurveyFootTdZQCa
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10HeightSpecTSQv17InternationalFootTdZQCf
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10HeightSpecTSQv5MetreTdZQBs
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10HeightSpecTSQv9KilometreTdZQBw
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10LengthSpecTSQv10MillimetreTdZQBy
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10LengthSpecTSQv12USSurveyFootTdZQCa
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10LengthSpecTSQv17InternationalFootTdZQCf
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10LengthSpecTSQv5MetreTdZQBs
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10LengthSpecTSQv9KilometreTdZQBw
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10RadiusSpecTSQv10MillimetreTdZQBy
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10RadiusSpecTSQv12USSurveyFootTdZQCa
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10RadiusSpecTSQv17InternationalFootTdZQCf
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10RadiusSpecTSQv5MetreTdZQBs
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common10RadiusSpecTSQv9KilometreTdZQBw
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common20LinearResolutionSpecTSQBf10MillimetreTdZQCj
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common20LinearResolutionSpecTSQBf12USSurveyFootTdZQCl
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common20LinearResolutionSpecTSQBf17InternationalFootTdZQCq
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common20LinearResolutionSpecTSQBf5MetreTdZQCd
+initializer for TypeInfo_S5app_b__T9QuantityBTS6common20LinearResolutionSpecTSQBf9KilometreTdZQCh
+initializer for app_b.QuantityB!(common.HeightSpec, common.InternationalFoot, double).QuantityB
+initializer for app_b.QuantityB!(common.HeightSpec, common.Kilometre, double).QuantityB
+initializer for app_b.QuantityB!(common.HeightSpec, common.Metre, double).QuantityB
+initializer for app_b.QuantityB!(common.HeightSpec, common.Millimetre, double).QuantityB
+initializer for app_b.QuantityB!(common.HeightSpec, common.USSurveyFoot, double).QuantityB
+initializer for app_b.QuantityB!(common.LengthSpec, common.InternationalFoot, double).QuantityB
+initializer for app_b.QuantityB!(common.LengthSpec, common.Kilometre, double).QuantityB
+initializer for app_b.QuantityB!(common.LengthSpec, common.Metre, double).QuantityB
+initializer for app_b.QuantityB!(common.LengthSpec, common.Millimetre, double).QuantityB
+initializer for app_b.QuantityB!(common.LengthSpec, common.USSurveyFoot, double).QuantityB
+initializer for app_b.QuantityB!(common.LinearResolutionSpec, common.InternationalFoot, double).QuantityB
+initializer for app_b.QuantityB!(common.LinearResolutionSpec, common.Kilometre, double).QuantityB
+initializer for app_b.QuantityB!(common.LinearResolutionSpec, common.Metre, double).QuantityB
+initializer for app_b.QuantityB!(common.LinearResolutionSpec, common.Millimetre, double).QuantityB
+initializer for app_b.QuantityB!(common.LinearResolutionSpec, common.USSurveyFoot, double).QuantityB
+initializer for app_b.QuantityB!(common.RadiusSpec, common.InternationalFoot, double).QuantityB
+initializer for app_b.QuantityB!(common.RadiusSpec, common.Kilometre, double).QuantityB
+initializer for app_b.QuantityB!(common.RadiusSpec, common.Metre, double).QuantityB
+initializer for app_b.QuantityB!(common.RadiusSpec, common.Millimetre, double).QuantityB
+initializer for app_b.QuantityB!(common.RadiusSpec, common.USSurveyFoot, double).QuantityB
+
+=== C-ONLY QUANTITY/UNIT SYMBOLS ===
+app_c.QuantityC!(common.HeightSpec, double).QuantityC.__xopEquals(ref const(app_c.QuantityC!(common.HeightSpec, double).QuantityC)) const
+app_c.QuantityC!(common.HeightSpec, double).QuantityC.__xtoHash(ref const(app_c.QuantityC!(common.HeightSpec, double).QuantityC))
+app_c.QuantityC!(common.LengthSpec, double).QuantityC.__xopEquals(ref const(app_c.QuantityC!(common.LengthSpec, double).QuantityC)) const
+app_c.QuantityC!(common.LengthSpec, double).QuantityC.__xtoHash(ref const(app_c.QuantityC!(common.LengthSpec, double).QuantityC))
+app_c.QuantityC!(common.LinearResolutionSpec, double).QuantityC.__xopEquals(ref const(app_c.QuantityC!(common.LinearResolutionSpec, double).QuantityC)) const
+app_c.QuantityC!(common.LinearResolutionSpec, double).QuantityC.__xtoHash(ref const(app_c.QuantityC!(common.LinearResolutionSpec, double).QuantityC))
+app_c.QuantityC!(common.RadiusSpec, double).QuantityC.__xopEquals(ref const(app_c.QuantityC!(common.RadiusSpec, double).QuantityC)) const
+app_c.QuantityC!(common.RadiusSpec, double).QuantityC.__xtoHash(ref const(app_c.QuantityC!(common.RadiusSpec, double).QuantityC))
+app_c.fromUnit!(common.LengthSpec, common.InternationalFoot).fromUnit(double)
+app_c.fromUnit!(common.LengthSpec, common.Kilometre).fromUnit(double)
+app_c.fromUnit!(common.LengthSpec, common.Metre).fromUnit(double)
+app_c.fromUnit!(common.LengthSpec, common.Millimetre).fromUnit(double)
+app_c.fromUnit!(common.LengthSpec, common.USSurveyFoot).fromUnit(double)
+common.toMetres!(common.Metre).toMetres(double)
+initializer for TypeInfo_S5app_c__T9QuantityCTS6common10HeightSpecTdZQBi
+initializer for TypeInfo_S5app_c__T9QuantityCTS6common10LengthSpecTdZQBi
+initializer for TypeInfo_S5app_c__T9QuantityCTS6common10RadiusSpecTdZQBi
+initializer for TypeInfo_S5app_c__T9QuantityCTS6common20LinearResolutionSpecTdZQBs
+initializer for app_c.QuantityC!(common.HeightSpec, double).QuantityC
+initializer for app_c.QuantityC!(common.LengthSpec, double).QuantityC
+initializer for app_c.QuantityC!(common.LinearResolutionSpec, double).QuantityC
+initializer for app_c.QuantityC!(common.RadiusSpec, double).QuantityC

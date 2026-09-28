@@ -1,0 +1,68 @@
+rawAddIU:
+0000:   48 63 C7                 movsxd    RAX,RDI
+0003:   8B CE                    mov       ECX,ESI
+0005:   48 03 C1                 add       RAX,RCX
+0008:   C3                       ret
+quantityAddIU:
+0000:   48 83 EC 18              sub       RSP,018h
+0004:   89 7C 24 08              mov       8[RSP],EDI
+0008:   89 74 24 10              mov       010h[RSP],ESI
+000c:   48 63 44 24 08           movsxd    RAX,8[RSP]
+0011:   8B 4C 24 10              mov       ECX,010h[RSP]
+0015:   48 03 C1                 add       RAX,RCX
+0018:   48 83 C4 18              add       RSP,018h
+001c:   C3                       ret
+rawSubUU:
+0000:   8B C7                    mov       EAX,EDI
+0002:   8B CE                    mov       ECX,ESI
+0004:   48 2B C1                 sub       RAX,RCX
+0007:   C3                       ret
+quantitySubUU:
+0000:   48 83 EC 18              sub       RSP,018h
+0004:   89 7C 24 08              mov       8[RSP],EDI
+0008:   89 74 24 10              mov       010h[RSP],ESI
+000c:   8B 44 24 08              mov       EAX,8[RSP]
+0010:   8B 4C 24 10              mov       ECX,010h[RSP]
+0014:   48 2B C1                 sub       RAX,RCX
+0017:   48 83 C4 18              add       RSP,018h
+001b:   C3                       ret
+rawMulUU:
+0000:   8B C7                    mov       EAX,EDI
+0002:   8B CE                    mov       ECX,ESI
+0004:   48 F7 E1                 mul       RCX
+0007:   C3                       ret
+quantityMulUU:
+0000:   48 83 EC 18              sub       RSP,018h
+0004:   89 7C 24 08              mov       8[RSP],EDI
+0008:   89 74 24 10              mov       010h[RSP],ESI
+000c:   8B 44 24 08              mov       EAX,8[RSP]
+0010:   8B 4C 24 10              mov       ECX,010h[RSP]
+0014:   48 F7 E1                 mul       RCX
+0017:   48 83 C4 18              add       RSP,018h
+001b:   C3                       ret
+rawScaleIU:
+0000:   48 63 C7                 movsxd    RAX,RDI
+0003:   8B CE                    mov       ECX,ESI
+0005:   48 F7 E9                 imul      RCX
+0008:   C3                       ret
+quantityScaleIU:
+0000:   50                       push      RAX
+0001:   89 3C 24                 mov       [RSP],EDI
+0004:   48 63 04 24              movsxd    RAX,[RSP]
+0008:   8B CE                    mov       ECX,ESI
+000a:   48 F7 E9                 imul      RCX
+000d:   59                       pop       RCX
+000e:   C3                       ret
+rawScaleRightUI:
+0000:   8B C7                    mov       EAX,EDI
+0002:   48 63 CE                 movsxd    RCX,RSI
+0005:   48 F7 E9                 imul      RCX
+0008:   C3                       ret
+quantityScaleRightUI:
+0000:   50                       push      RAX
+0001:   89 34 24                 mov       [RSP],ESI
+0004:   8B C7                    mov       EAX,EDI
+0006:   48 63 0C 24              movsxd    RCX,[RSP]
+000a:   48 F7 E9                 imul      RCX
+000d:   59                       pop       RCX
+000e:   C3                       ret

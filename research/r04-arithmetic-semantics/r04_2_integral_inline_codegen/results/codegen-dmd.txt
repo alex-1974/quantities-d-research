@@ -1,0 +1,75 @@
+_D7codegen4qAddFNaNbNiNfikZSQBa__T1QTlZQf:
+0000:   48 63 C6                 movsxd    RAX,RSI
+0003:   8B CF                    mov       ECX,EDI
+0005:   48 03 C1                 add       RAX,RCX
+0008:   C3                       ret
+_D7codegen4qSubFNaNbNiNfkkZSQBa__T1QTlZQf:
+0000:   8B C6                    mov       EAX,ESI
+0002:   8B CF                    mov       ECX,EDI
+0004:   48 2B C1                 sub       RAX,RCX
+0007:   C3                       ret
+_D7codegen4qMulFNaNbNiNfkkZSQBa__T1QTmZQf:
+0000:   8B C6                    mov       EAX,ESI
+0002:   8B CF                    mov       ECX,EDI
+0004:   48 F7 E1                 mul       RCX
+0007:   C3                       ret
+_D7codegen6qScaleFNaNbNiNfikZSQBc__T1QTlZQf:
+0000:   48 63 C6                 movsxd    RAX,RSI
+0003:   8B CF                    mov       ECX,EDI
+0005:   48 F7 E9                 imul      RCX
+0008:   C3                       ret
+_D7codegen11qScaleRightFNaNbNiNfkiZSQBi__T1QTlZQf:
+0000:   8B C6                    mov       EAX,ESI
+0002:   48 63 CF                 movsxd    RCX,RDI
+0005:   48 F7 E9                 imul      RCX
+0008:   C3                       ret
+rawInlineAddIU:
+0000:   48 63 C7                 movsxd    RAX,RDI
+0003:   8B CE                    mov       ECX,ESI
+0005:   48 03 C1                 add       RAX,RCX
+0008:   C3                       ret
+quantityInlineAddIU:
+0000:   48 63 C7                 movsxd    RAX,RDI
+0003:   8B CE                    mov       ECX,ESI
+0005:   48 03 C1                 add       RAX,RCX
+0008:   C3                       ret
+rawInlineSubUU:
+0000:   8B C7                    mov       EAX,EDI
+0002:   8B CE                    mov       ECX,ESI
+0004:   48 2B C1                 sub       RAX,RCX
+0007:   C3                       ret
+quantityInlineSubUU:
+0000:   8B C7                    mov       EAX,EDI
+0002:   8B CE                    mov       ECX,ESI
+0004:   48 2B C1                 sub       RAX,RCX
+0007:   C3                       ret
+rawInlineMulUU:
+0000:   8B C7                    mov       EAX,EDI
+0002:   8B CE                    mov       ECX,ESI
+0004:   48 F7 E1                 mul       RCX
+0007:   C3                       ret
+quantityInlineMulUU:
+0000:   8B C7                    mov       EAX,EDI
+0002:   8B CE                    mov       ECX,ESI
+0004:   48 F7 E1                 mul       RCX
+0007:   C3                       ret
+rawInlineScaleIU:
+0000:   48 63 C7                 movsxd    RAX,RDI
+0003:   8B CE                    mov       ECX,ESI
+0005:   48 F7 E9                 imul      RCX
+0008:   C3                       ret
+quantityInlineScaleIU:
+0000:   48 63 C7                 movsxd    RAX,RDI
+0003:   8B CE                    mov       ECX,ESI
+0005:   48 F7 E9                 imul      RCX
+0008:   C3                       ret
+rawInlineScaleRightUI:
+0000:   8B C7                    mov       EAX,EDI
+0002:   48 63 CE                 movsxd    RCX,RSI
+0005:   48 F7 E9                 imul      RCX
+0008:   C3                       ret
+quantityInlineScaleRightUI:
+0000:   8B C7                    mov       EAX,EDI
+0002:   48 63 CE                 movsxd    RCX,RSI
+0005:   48 F7 E9                 imul      RCX
+0008:   C3                       ret
