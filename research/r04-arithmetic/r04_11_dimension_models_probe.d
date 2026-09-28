@@ -100,25 +100,34 @@ template MergeTermLists(AList, BList)
         alias MergeTermLists = AList;
     else
     {
-        alias A = AList[0];
-        alias B = BList[0];
+        alias A = AList.Items[0];
+        alias B = BList.Items[0];
 
         static if (TagRank!(A.DimensionTag) < TagRank!(B.DimensionTag))
-            alias MergeTermLists = AliasSeq!(A,
-                MergeTermLists!(AList[1 .. $], BList));
+            alias MergeTermLists = TermList!(
+                A,
+                MergeTermLists!(
+                    TermList!(AList.Items[1 .. $]),
+                    BList).Items);
         else static if (TagRank!(A.DimensionTag) > TagRank!(B.DimensionTag))
-            alias MergeTermLists = AliasSeq!(B,
-                MergeTermLists!(AList, BList[1 .. $]));
+            alias MergeTermLists = TermList!(
+                B,
+                MergeTermLists!(
+                    AList,
+                    TermList!(BList.Items[1 .. $])).Items);
         else
         {
             enum sum = A.exponent + B.exponent;
             static if (sum == 0)
-                alias MergeTermLists =
-                    MergeTermLists!(AList[1 .. $], BList[1 .. $]);
+                alias MergeTermLists = MergeTermLists!(
+                    TermList!(AList.Items[1 .. $]),
+                    TermList!(BList.Items[1 .. $]));
             else
-                alias MergeTermLists = AliasSeq!(
+                alias MergeTermLists = TermList!(
                     DimTerm!(A.DimensionTag, sum),
-                    MergeTermLists!(AList[1 .. $], BList[1 .. $]));
+                    MergeTermLists!(
+                        TermList!(AList.Items[1 .. $]),
+                        TermList!(BList.Items[1 .. $])).Items);
         }
     }
 }
@@ -126,23 +135,30 @@ template MergeTermLists(AList, BList)
 template NegateTerms(List)
 {
     static if (List.length == 0)
-        alias NegateTerms = AliasSeq!();
+        alias NegateTerms = TermList!();
     else
-        alias NegateTerms = AliasSeq!(
-            DimTerm!(List[0].DimensionTag, -List[0].exponent),
-            NegateTerms!(List[1 .. $]));
+        alias NegateTerms = TermList!(
+            DimTerm!(
+                List.Items[0].DimensionTag,
+                -List.Items[0].exponent),
+            NegateTerms!(
+                TermList!(List.Items[1 .. $])).Items);
 }
 
 template ScaleTerms(List, int N)
 {
     static if (List.length == 0)
-        alias ScaleTerms = AliasSeq!();
-    else static if (List[0].exponent * N == 0)
-        alias ScaleTerms = ScaleTerms!(List[1 .. $], N);
+        alias ScaleTerms = TermList!();
+    else static if (List.Items[0].exponent * N == 0)
+        alias ScaleTerms =
+            ScaleTerms!(TermList!(List.Items[1 .. $]), N);
     else
-        alias ScaleTerms = AliasSeq!(
-            DimTerm!(List[0].DimensionTag, List[0].exponent * N),
-            ScaleTerms!(List[1 .. $], N));
+        alias ScaleTerms = TermList!(
+            DimTerm!(
+                List.Items[0].DimensionTag,
+                List.Items[0].exponent * N),
+            ScaleTerms!(
+                TermList!(List.Items[1 .. $]), N).Items);
 }
 
 template OpenMul(A, B)
