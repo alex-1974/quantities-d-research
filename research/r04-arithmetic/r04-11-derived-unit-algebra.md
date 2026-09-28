@@ -281,3 +281,62 @@ This means the unresolved question is now API policy rather than feasibility:
 should quantities-d accept the orphan restriction for ordinary operators and
 provide an explicit escape hatch, or should a scoped relation wrapper become a
 first-class public mechanism?
+
+## Compiler evidence — integral canonical rescaling
+
+Observed with both baseline compilers (DMD and LDC):
+
+- canonical product with scale 1: classified as total for integral exactness;
+- fractional canonical rescale `1 / 1_000_000`: classified as not total;
+- reducible ratios are classified after reduction;
+- an integer multiplier is total with respect to exactness, while overflow
+  remains an independent representation-safety question.
+
+The reference case is:
+
+    canonical lhs: m
+    canonical rhs: m
+    mathematical product: m²
+    result canonical unit: km²
+    rescale: 1 / 1_000_000
+
+Selected values can still convert exactly (for example 1_000_000 m² -> 1 km²),
+but the direct operator contract is value-independent. Since 1 m² cannot be
+represented by an integral km² Rep, the operation is not total for integral
+representations.
+
+### R04.11 integral product gate
+
+For a direct integral `Quantity * Quantity` operator to exist, all independent
+gates must succeed:
+
+1. semantic gate: a unique ResultSpec exists;
+2. dimension gate: ResultSpec.Dimension equals the product dimension;
+3. unit gate: mathematical product-unit and ResultSpec.CanonicalUnit have the
+   same dimension;
+4. representation gate: a built-in ResultRep contains the complete mathematical
+   product range;
+5. canonical-rescale gate: the reduced mathematical-unit -> canonical-unit
+   scale has denominator 1 for integral storage;
+6. post-rescale range gate: applying any integer scale multiplier still fits the
+   selected ResultRep for every representable operand pair.
+
+Gate 5 is necessary but not sufficient. A scale such as `1_000_000 / 1` is
+always exact for integer values but can enlarge the result range, so gate 6 must
+be proven together with ResultRep selection.
+
+This extends the existing M3 Class-W rule:
+
+> If an integral quantities-d arithmetic operator compiles, overflow and
+> canonical-unit truncation are impossible for every value representable by
+> its operand Reps.
+
+### Consequence for fractional rescale
+
+A relation whose canonical rescale is fractional must not silently expose a
+direct integral operator. It needs an explicit value-dependent operation using
+checked/exact result semantics, analogous in spirit to the existing checked
+conversion and `exactDiv` APIs.
+
+The exact public name and result type remain open for later R04 work; this probe
+establishes the safety requirement, not the final syntax.
