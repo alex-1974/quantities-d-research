@@ -71,9 +71,15 @@ template Normalize(Terms...)
             Terms[0]);
 }
 
-struct KeyedDimension(Terms...)
+struct CanonicalDimension(Terms...)
 {
-    alias TermsList = Normalize!Terms;
+    alias TermsList = TermList!Terms;
+}
+
+template KeyedDimension(Terms...)
+{
+    alias N = Normalize!Terms;
+    alias KeyedDimension = CanonicalDimension!(N.Items);
 }
 
 template KeyedMul(A, B)
@@ -91,6 +97,7 @@ alias KB = KeyedDimension!(
     DimTerm!(TimeTag, -1),
     DimTerm!(LengthTag, 1));
 
+// Canonicalization must occur before the concrete dimension type is formed.
 static assert(is(KA == KB));
 
 alias KLength = KeyedDimension!(DimTerm!(LengthTag, 1));
