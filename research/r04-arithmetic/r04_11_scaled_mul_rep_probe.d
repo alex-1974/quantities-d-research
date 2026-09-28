@@ -1,6 +1,8 @@
 module r04_11_scaled_mul_rep_probe;
 
 import std.traits : isIntegral, isSigned;
+import std.meta : AliasSeq;
+import quantities.arithmetic_rep : MulRep;
 
 // Research-only exact signed-magnitude oracle for values arising from
 // (<=64-bit integral operand) * (<=64-bit integral operand) * signed 64-bit K.
@@ -246,3 +248,23 @@ static assert(is(ScaledMulRep!(long, long, 0) == ubyte));
 enum expected = cast(long) byte.max * cast(long) byte.max * 1000;
 static assert(expected == 16_129_000);
 static assert(expected <= int.max);
+
+
+// Exhaustive consistency check against the established M3 MulRep policy.
+// K=1 must be exactly the same problem as ordinary integral multiplication.
+alias IntegralReps = AliasSeq!(
+    byte, ubyte,
+    short, ushort,
+    int, uint,
+    long, ulong);
+
+static foreach (A; IntegralReps)
+{
+    static foreach (B; IntegralReps)
+    {
+        static assert(
+            is(ScaledMulRep!(A, B, 1) == MulRep!(A, B)),
+            "ScaledMulRep K=1 disagrees with MulRep for "
+                ~ A.stringof ~ " * " ~ B.stringof);
+    }
+}
