@@ -1,13 +1,14 @@
 module r04_11_scaled_mul_rep_probe;
 
 import std.traits : isIntegral, isSigned;
+import core.int128 : Cent;
 
 private enum long signedMin(T) = cast(long) T.min;
 private enum ulong unsignedMax(T) = cast(ulong) T.max;
 
 // Research-only exact range model using signed 128-bit arithmetic. This is an
 // oracle for built-in <=64-bit operand Reps, not a proposed production API.
-private alias Wide = cent;
+private alias Wide = Cent;
 
 private struct Range
 {
@@ -15,7 +16,7 @@ private struct Range
     Wide max;
 }
 
-private enum Range repRange(T)()
+private Range repRange(T)()
     if (isIntegral!T)
 {
     static if (isSigned!T)
@@ -24,21 +25,21 @@ private enum Range repRange(T)()
         return Range(0, cast(Wide) T.max);
 }
 
-private enum Wide min4(Wide a, Wide b, Wide c, Wide d)
+private Wide min4(Wide a, Wide b, Wide c, Wide d)
 {
     Wide r = a < b ? a : b;
     r = r < c ? r : c;
     return r < d ? r : d;
 }
 
-private enum Wide max4(Wide a, Wide b, Wide c, Wide d)
+private Wide max4(Wide a, Wide b, Wide c, Wide d)
 {
     Wide r = a > b ? a : b;
     r = r > c ? r : c;
     return r > d ? r : d;
 }
 
-private enum Range scaledProductRange(A, B, long K)()
+private Range scaledProductRange(A, B, long K)()
     if (isIntegral!A && isIntegral!B)
 {
     enum ar = repRange!A;
@@ -58,7 +59,7 @@ private enum Range scaledProductRange(A, B, long K)()
         return Range(hi * K, lo * K);
 }
 
-private enum bool contains(T)(Range r)
+private bool contains(T)(Range r)
     if (isIntegral!T)
 {
     static if (isSigned!T)
