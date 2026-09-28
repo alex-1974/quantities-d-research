@@ -36,15 +36,15 @@ struct Dimension(int LExponent, int TExponent)
 template MulDimension(A, B)
 {
     alias MulDimension = Dimension!(
-        A.tupleof[0] + B.tupleof[0],
-        A.tupleof[1] + B.tupleof[1]);
+        A.lengthExponent + B.lengthExponent,
+        A.timeExponent + B.timeExponent);
 }
 
 template DivDimension(A, B)
 {
     alias DivDimension = Dimension!(
-        A.tupleof[0] - B.tupleof[0],
-        A.tupleof[1] - B.tupleof[1]);
+        A.lengthExponent - B.lengthExponent,
+        A.timeExponent - B.timeExponent);
 }
 
 alias LengthDimension       = Dimension!(1, 0);
