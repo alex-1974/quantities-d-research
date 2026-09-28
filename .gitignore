@@ -1,0 +1,17 @@
+.dub/
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*-test-library
+
+# DUB-built executables commonly generated beside probe projects.
+quantities-*
+
+# Generated measurement output should be explicitly curated before commit.
+results/
+
+.workspace/
