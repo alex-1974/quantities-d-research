@@ -28,6 +28,31 @@ A quotient Dimension does not by itself determine a result Spec.
 | `Length / Time` | `Length Time^-1` | Velocity is plausible but not implied by Dimension alone | explicit Velocity relation required |
 | foreign Spec / foreign Spec | quotient Dimension | neither operand can own consumer semantics | external relation provider required if supported |
 
+## Scalar division is a separate operation class
+
+`Quantity / scalar` and `Quantity / Quantity` are not the same semantic
+operation.
+
+For scalar division, the scalar contributes no physical Dimension, Unit, or
+Spec. The result therefore retains the original Quantity Spec and Dimension:
+
+```text
+Length / 2 -> Length
+10 m / 2 -> 5 m
+```
+
+By contrast, Quantity/Quantity division performs Dimension and Unit algebra:
+
+```text
+Length / Length -> Dimensionless physical Dimension
+10 m / 2 m -> dimensionless result
+```
+
+A raw numeric scalar such as `2` must not be modeled implicitly as a
+`Quantity` with a dimensionless Spec merely to unify these operator paths.
+The existing scalar-division semantics remain a distinct operation class.
+R04.13 studies Quantity/Quantity division unless explicitly stated otherwise.
+
 ## Dimensionless is not a Spec
 
 `Dimensionless` is the multiplicative identity of physical Dimension algebra.
