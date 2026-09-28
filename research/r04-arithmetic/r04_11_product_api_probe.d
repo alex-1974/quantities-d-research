@@ -61,8 +61,8 @@ package:
     }
 }
 
-struct AreaMetre(long value) {}
-struct AreaKilometre(long value) {}
+struct AreaMetre { long value; }
+struct AreaKilometre { long value; }
 
 // Model the total direct operator case: canonical rescale = 1 and the chosen
 // ResultRep contains the complete product range.
