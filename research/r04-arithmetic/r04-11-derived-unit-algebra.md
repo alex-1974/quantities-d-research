@@ -146,3 +146,43 @@ The intended principle is:
 
 > quantities-d supplies algebra and safety; applications may supply their own
 > physical vocabulary.
+
+## Compiler evidence — first open-customization probe
+
+Observed on the user's baseline toolchain with both DMD and LDC:
+
+- positive core probe: PASS
+- external consumer probe: PASS
+- negative no-relation probe: PASS
+
+The external consumer test is significant because the left-hand Spec is not
+modified by the consumer. The consumer-owned right-hand Spec supplies a
+`ProductFromLeft!Lhs` hook, and the core dispatcher discovers it successfully
+across module boundaries.
+
+This establishes that the two-sided member-hook model is viable in D for at
+least this extension shape:
+
+    core/existing lhs  *  consumer-owned rhs  -> consumer-owned result
+
+The negative probe also confirms the intended semantic rule: equal dimensions
+alone do not create a multiplication relation.
+
+### What this does not establish yet
+
+The following remain open and require dedicated probes before production use:
+
+- ambiguity when both `Lhs.ProductWith!Rhs` and `Rhs.ProductFromLeft!Lhs`
+  provide non-void but different results;
+- extension of a relation between two Specs neither of which the consumer owns;
+- commutative canonicalization of multiplication relations;
+- non-commutative future operations;
+- exact result-scale reduction using production `ExactRatio` rather than the
+  minimal research `Ratio`;
+- integral arithmetic when canonical-unit rescaling is inexact;
+- overflow behavior while composing or rescaling large exact ratios;
+- interaction with the production `Quantity!(Spec, Rep)` operator machinery.
+
+The present evidence is therefore sufficient to keep the two-sided hook model
+as a serious candidate, but not yet sufficient to promote it to the production
+API.
