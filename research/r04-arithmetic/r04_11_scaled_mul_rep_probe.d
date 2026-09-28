@@ -2,7 +2,6 @@ module r04_11_scaled_mul_rep_probe;
 
 import std.traits : isIntegral, isSigned;
 import std.meta : AliasSeq;
-import quantities.arithmetic_rep : MulRep;
 
 // Research-only exact signed-magnitude oracle for values arising from
 // (<=64-bit integral operand) * (<=64-bit integral operand) * signed 64-bit K.
@@ -250,6 +249,33 @@ static assert(expected == 16_129_000);
 static assert(expected <= int.max);
 
 
+// Research-local reference for the already-established M3 MulRep policy.
+// This deliberately duplicates only the policy under comparison so the probe
+// remains self-contained in quantities-d-research.
+
+template ReferenceMulRep(A, B)
+    if (isIntegral!A && isIntegral!B)
+{
+    enum r = scaledProductRange!(A, B, 1);
+
+    static if (!r.min.negative)
+    {
+        static if (contains!ubyte(r)) alias ReferenceMulRep = ubyte;
+        else static if (contains!ushort(r)) alias ReferenceMulRep = ushort;
+        else static if (contains!uint(r)) alias ReferenceMulRep = uint;
+        else static if (contains!ulong(r)) alias ReferenceMulRep = ulong;
+        else alias ReferenceMulRep = void;
+    }
+    else
+    {
+        static if (contains!byte(r)) alias ReferenceMulRep = byte;
+        else static if (contains!short(r)) alias ReferenceMulRep = short;
+        else static if (contains!int(r)) alias ReferenceMulRep = int;
+        else static if (contains!long(r)) alias ReferenceMulRep = long;
+        else alias ReferenceMulRep = void;
+    }
+}
+
 // Exhaustive consistency check against the established M3 MulRep policy.
 // K=1 must be exactly the same problem as ordinary integral multiplication.
 alias IntegralReps = AliasSeq!(
@@ -263,7 +289,7 @@ static foreach (A; IntegralReps)
     static foreach (B; IntegralReps)
     {
         static assert(
-            is(ScaledMulRep!(A, B, 1) == MulRep!(A, B)),
+            is(ScaledMulRep!(A, B, 1) == ReferenceMulRep!(A, B)),
             "ScaledMulRep K=1 disagrees with MulRep for "
                 ~ A.stringof ~ " * " ~ B.stringof);
     }
