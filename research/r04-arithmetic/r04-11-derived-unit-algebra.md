@@ -238,3 +238,46 @@ mechanisms that preserve the existing two-parameter Quantity identity:
 A central runtime registry, string-based lookup, and adding an Algebra parameter to
 `Quantity!(Spec, Rep)` remain outside the preferred design because they would either
 add runtime machinery or change type identity/template cost.
+
+## Compiler evidence — relation-set API shapes
+
+Observed with both baseline compilers (DMD and LDC):
+
+- explicit named relation operation: PASS
+- relation-scope wrapper with operator syntax: PASS
+- runtime unittest execution: PASS
+
+The experiment confirms that an explicit compile-time relation set can solve the
+orphan-relation problem without becoming part of `Quantity!(Spec, Rep)` itself.
+
+Two API shapes are viable at the language level:
+
+    multiplyWith!Relations(lhs, rhs)
+
+and a scoped wrapper form equivalent to:
+
+    relations.wrap(lhs) * relations.wrap(rhs)
+
+The first is explicit and simple but loses natural operator syntax. The second
+preserves operator syntax inside an explicit local relation context, at the cost
+of temporary wrapper types at the expression boundary.
+
+Neither approach requires runtime registration or global mutable state. The
+relation-set type can remain compile-time-only.
+
+### Architectural consequence
+
+The orphan-relation problem and ordinary Quantity type identity can therefore be
+separated:
+
+- `Quantity!(Spec, Rep)` remains canonical and context-free;
+- ordinary relations owned by an operand may continue to use member hooks;
+- exceptional third-party relations can be supplied through an explicit
+  compile-time relation context;
+- a direct bare `lhs * rhs` cannot discover an arbitrary consumer relation set
+  unless that context is encoded somewhere visible to overload resolution.
+
+This means the unresolved question is now API policy rather than feasibility:
+should quantities-d accept the orphan restriction for ordinary operators and
+provide an explicit escape hatch, or should a scoped relation wrapper become a
+first-class public mechanism?
