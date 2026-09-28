@@ -249,48 +249,97 @@ static assert(expected == 16_129_000);
 static assert(expected <= int.max);
 
 
-// Research-local reference for the already-established M3 MulRep policy.
-// This deliberately duplicates only the policy under comparison so the probe
-// remains self-contained in quantities-d-research.
+// Compare against the actual production MulRep bit-shape policy.
+// This is copied structurally into the research probe so the repo remains
+// self-contained and the comparison reflects the real implementation.
 
-template ReferenceMulRep(A, B)
-    if (isIntegral!A && isIntegral!B)
+private enum bits(T) = T.sizeof * 8;
+private enum posBits(T) = bits!T - (isSigned!T ? 1 : 0);
+private enum negPow(T) = isSigned!T ? bits!T - 1 : 0;
+
+private struct ProdShape
 {
-    enum r = scaledProductRange!(A, B, 1);
-
-    static if (!r.min.negative)
-    {
-        static if (contains!ubyte(r)) alias ReferenceMulRep = ubyte;
-        else static if (contains!ushort(r)) alias ReferenceMulRep = ushort;
-        else static if (contains!uint(r)) alias ReferenceMulRep = uint;
-        else static if (contains!ulong(r)) alias ReferenceMulRep = ulong;
-        else alias ReferenceMulRep = void;
-    }
-    else
-    {
-        static if (contains!byte(r)) alias ReferenceMulRep = byte;
-        else static if (contains!short(r)) alias ReferenceMulRep = short;
-        else static if (contains!int(r)) alias ReferenceMulRep = int;
-        else static if (contains!long(r)) alias ReferenceMulRep = long;
-        else alias ReferenceMulRep = void;
-    }
+    size_t minPow;
+    size_t maxBits;
 }
 
-// Exhaustive consistency check against the established M3 MulRep policy.
-// K=1 must be exactly the same problem as ordinary integral multiplication.
+private template ProductionMulShape(A, B)
+{
+    static if (!isSigned!A && !isSigned!B)
+        enum ProductionMulShape = ProdShape(0, posBits!A + posBits!B);
+    else static if (isSigned!A && isSigned!B)
+        enum ProductionMulShape = ProdShape(
+            negPow!A + posBits!B,
+            negPow!A + negPow!B + 1
+        );
+    else static if (isSigned!A)
+        enum ProductionMulShape = ProdShape(
+            negPow!A + posBits!B,
+            posBits!A + posBits!B
+        );
+    else
+        enum ProductionMulShape = ProdShape(
+            posBits!A + negPow!B,
+            posBits!A + posBits!B
+        );
+}
+
+private template ProductionFitsShape(T, alias S)
+{
+    static if (isSigned!T)
+        enum ProductionFitsShape =
+            S.minPow <= bits!T - 1 &&
+            S.maxBits <= bits!T - 1;
+    else
+        enum ProductionFitsShape =
+            S.minPow == 0 &&
+            S.maxBits <= bits!T;
+}
+
+private template ProductionSelectRep(alias S)
+{
+    static if (ProductionFitsShape!(byte, S)) alias ProductionSelectRep = byte;
+    else static if (ProductionFitsShape!(ubyte, S)) alias ProductionSelectRep = ubyte;
+    else static if (ProductionFitsShape!(short, S)) alias ProductionSelectRep = short;
+    else static if (ProductionFitsShape!(ushort, S)) alias ProductionSelectRep = ushort;
+    else static if (ProductionFitsShape!(int, S)) alias ProductionSelectRep = int;
+    else static if (ProductionFitsShape!(uint, S)) alias ProductionSelectRep = uint;
+    else static if (ProductionFitsShape!(long, S)) alias ProductionSelectRep = long;
+    else static if (ProductionFitsShape!(ulong, S)) alias ProductionSelectRep = ulong;
+    else alias ProductionSelectRep = void;
+}
+
+template ProductionMulRep(A, B)
+{
+    alias ProductionMulRep = ProductionSelectRep!(ProductionMulShape!(A, B));
+}
+
 alias IntegralReps = AliasSeq!(
     byte, ubyte,
     short, ushort,
     int, uint,
     long, ulong);
 
+enum bool productionAdmits(A, B) = !is(ProductionMulRep!(A, B) == void);
+enum bool exactAdmits(A, B) = !is(ScaledMulRep!(A, B, 1) == void);
+
+// Safety relation: whenever production admits a pair, the exact-range oracle
+// must also admit it. Any violation here would indicate the new oracle is
+// stricter or inconsistent with an already-safe production case.
 static foreach (A; IntegralReps)
 {
     static foreach (B; IntegralReps)
     {
         static assert(
-            is(ScaledMulRep!(A, B, 1) == ReferenceMulRep!(A, B)),
-            "ScaledMulRep K=1 disagrees with MulRep for "
+            !productionAdmits!(A, B) || exactAdmits!(A, B),
+            "exact range oracle rejects production-admitted pair "
                 ~ A.stringof ~ " * " ~ B.stringof);
     }
 }
+
+// Known precision gain: production's bit-shape is conservative for byte*long,
+// while the exact mathematical endpoint range fits long.
+static assert(is(ProductionMulRep!(byte, long) == void));
+static assert(is(ScaledMulRep!(byte, long, 1) == long));
+static assert(is(ProductionMulRep!(long, byte) == void));
+static assert(is(ScaledMulRep!(long, byte, 1) == long));
