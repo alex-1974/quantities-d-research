@@ -13,6 +13,7 @@ integral_rescale="$here/r04_11_integral_rescale_probe.d"
 scaled_mul_rep="$here/r04_11_scaled_mul_rep_probe.d"
 dimension_models="$here/r04_11_dimension_models_probe.d"
 open_canonicalization="$here/r04_11_open_canonicalization_probe.d"
+structural_dimension="$here/r04_11_structural_dimension_probe.d"
 
 compilers=()
 command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
@@ -51,6 +52,13 @@ for compiler in "${compilers[@]}"; do
         failed=1
     else
         echo "PASS: open dimension canonicalization probe"
+    fi
+
+    echo "=== $compiler: structural dimension semantics ==="
+    if ! "$compiler" -c "$structural_dimension" -I"$here" -of=/tmp/r04_11_structural_dimension_${compiler}.o; then
+        failed=1
+    else
+        echo "PASS: structural dimension semantics probe"
     fi
 
     echo "=== $compiler: scaled integral product range ==="
