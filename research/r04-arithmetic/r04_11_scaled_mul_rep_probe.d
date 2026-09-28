@@ -337,9 +337,9 @@ static foreach (A; IntegralReps)
     }
 }
 
-// Known precision gain: production's bit-shape is conservative for byte*long,
-// while the exact mathematical endpoint range fits long.
+// Spot-check a mixed signed case whose exact product range exceeds all
+// built-in integral Reps. Both policies must reject it.
 static assert(is(ProductionMulRep!(byte, long) == void));
-static assert(is(ScaledMulRep!(byte, long, 1) == long));
+static assert(is(ScaledMulRep!(byte, long, 1) == void));
 static assert(is(ProductionMulRep!(long, byte) == void));
-static assert(is(ScaledMulRep!(long, byte, 1) == long));
+static assert(is(ScaledMulRep!(long, byte, 1) == void));
