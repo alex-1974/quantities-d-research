@@ -162,15 +162,20 @@ private Range scaledProductRange(A, B, ulong K)()
     if (isIntegral!A && isIntegral!B)
 {
     enum r = productRange!(A,B);
+
     static if (K == 0)
         return Range(fromSigned64(0), fromSigned64(0));
+    else static if (K == 1)
+        return r;
     else
     {
-        // The focused examples below are chosen so each endpoint magnitude
-        // still fits ulong before scaling. This keeps this probe small and
-        // avoids pretending to be a general BigInt implementation.
-        assert(r.min.magnitude.hi == 0);
-        assert(r.max.magnitude.hi == 0);
+        // Focused Gate-6 probe only: for K > 1 we currently support cases
+        // whose unscaled endpoint magnitudes still fit in 64 bits. That is
+        // sufficient for the canonical-rescale examples under study and does
+        // not masquerade as a general 128x64 arithmetic implementation.
+        static assert(
+            r.min.magnitude.hi == 0 && r.max.magnitude.hi == 0,
+            "scaledProductRange K>1 requires a 128x64 oracle for this pair");
 
         auto loMag = mul64(r.min.magnitude.lo, K);
         auto hiMag = mul64(r.max.magnitude.lo, K);
