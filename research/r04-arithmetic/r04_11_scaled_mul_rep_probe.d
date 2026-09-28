@@ -105,6 +105,13 @@ template ScaledMulRep(A, B, long K)
     }
 }
 
+// First prove the range oracle independently of Rep selection.
+enum byteByteRange = scaledProductRange!(byte, byte, 1);
+static assert(byteByteRange.min == -16256);
+static assert(byteByteRange.max == 16384);
+static assert(!contains!byte(byteByteRange));
+static assert(contains!short(byteByteRange));
+
 // K=1 recovers ordinary complete-product range behavior.
 static assert(is(ScaledMulRep!(byte, byte, 1) == short));
 static assert(is(ScaledMulRep!(ubyte, ubyte, 1) == ushort));
