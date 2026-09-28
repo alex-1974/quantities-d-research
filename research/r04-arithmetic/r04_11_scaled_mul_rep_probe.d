@@ -75,24 +75,34 @@ template ScaledMulRep(A, B, long K)
 {
     enum r = scaledProductRange!(A, B, K);
 
-    static if (contains!byte(r))
-        alias ScaledMulRep = byte;
-    else static if (contains!ubyte(r))
-        alias ScaledMulRep = ubyte;
-    else static if (contains!short(r))
-        alias ScaledMulRep = short;
-    else static if (contains!ushort(r))
-        alias ScaledMulRep = ushort;
-    else static if (contains!int(r))
-        alias ScaledMulRep = int;
-    else static if (contains!uint(r))
-        alias ScaledMulRep = uint;
-    else static if (contains!long(r))
-        alias ScaledMulRep = long;
-    else static if (contains!ulong(r))
-        alias ScaledMulRep = ulong;
+    // Match the existing arithmetic policy: choose by storage width first,
+    // and use unsigned only when the complete mathematical range is nonnegative.
+    static if (r.min >= 0)
+    {
+        static if (contains!ubyte(r))
+            alias ScaledMulRep = ubyte;
+        else static if (contains!ushort(r))
+            alias ScaledMulRep = ushort;
+        else static if (contains!uint(r))
+            alias ScaledMulRep = uint;
+        else static if (contains!ulong(r))
+            alias ScaledMulRep = ulong;
+        else
+            alias ScaledMulRep = void;
+    }
     else
-        alias ScaledMulRep = void;
+    {
+        static if (contains!byte(r))
+            alias ScaledMulRep = byte;
+        else static if (contains!short(r))
+            alias ScaledMulRep = short;
+        else static if (contains!int(r))
+            alias ScaledMulRep = int;
+        else static if (contains!long(r))
+            alias ScaledMulRep = long;
+        else
+            alias ScaledMulRep = void;
+    }
 }
 
 // K=1 recovers ordinary complete-product range behavior.
@@ -112,7 +122,7 @@ static assert(is(ScaledMulRep!(byte, byte, 1000) == int));
 static assert(is(ScaledMulRep!(int, int, 1000) == void));
 
 // Zero scale is mathematically total and collapses the result range.
-static assert(is(ScaledMulRep!(long, long, 0) == byte));
+static assert(is(ScaledMulRep!(long, long, 0) == ubyte));
 
 // Negative integer scale reverses the interval and may change signedness needs.
 static assert(is(ScaledMulRep!(ubyte, ubyte, -1) == int));
