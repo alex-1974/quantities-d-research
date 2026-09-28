@@ -145,3 +145,25 @@ research establishes:
 - DMD/LDC baseline agreement;
 - CTFE/UFCS/attribute contracts;
 - consumer justification for any standard dimensionless Spec.
+
+
+## Probe 1 result — semantic resolver shape
+
+The isolated compile-time resolver probe supports the proposed ordered shape:
+
+- `Lhs.QuotientWith!Rhs` resolves a forward operand-owned relation;
+- `Rhs.QuotientFromLeft!Lhs` resolves the same ordered operation from the
+  divisor side;
+- two non-void operand-owned relations must agree;
+- no relation resolves to `void`;
+- `Relations.Quotient!(Lhs, Rhs)` can express relations between two foreign
+  Specs;
+- external relations are ordered and are not automatically swapped;
+- an explicit external provider is authoritative and does not silently fall
+  back to operand-owned hooks.
+
+This is structural evidence only. The probe intentionally does not yet validate
+that a selected result Spec has
+`DivideDimension!(Lhs.Dimension, Rhs.Dimension)`; that validation is the next
+probe and must use the promoted canonical Dimension algebra rather than local
+placeholder semantics.
