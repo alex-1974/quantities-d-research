@@ -91,9 +91,37 @@ alias KilometresPerSecondSquared = DivUnit!(Kilometre, MulUnit!(Second, Second))
 
 // --- Specs ----------------------------------------------------------------
 
-struct Area;
-struct Velocity;
-struct Acceleration;
+struct Time
+{
+    alias Dimension = TimeDimension;
+    alias CanonicalUnit = Second;
+}
+
+struct Area
+{
+    alias Dimension = AreaDimension;
+    alias CanonicalUnit = SquareMetre;
+}
+
+struct Acceleration
+{
+    alias Dimension = AccelerationDimension;
+    alias CanonicalUnit = MetresPerSecondSquared;
+}
+
+struct Velocity
+{
+    alias Dimension = VelocityDimension;
+    alias CanonicalUnit = MetresPerSecond;
+
+    template QuotientWith(Rhs)
+    {
+        static if (is(Rhs == Time))
+            alias QuotientWith = Acceleration;
+        else
+            alias QuotientWith = void;
+    }
+}
 
 struct Length
 {
@@ -115,38 +143,6 @@ struct Length
         else
             alias QuotientWith = void;
     }
-}
-
-struct Time
-{
-    alias Dimension = TimeDimension;
-    alias CanonicalUnit = Second;
-}
-
-struct Area
-{
-    alias Dimension = AreaDimension;
-    alias CanonicalUnit = SquareMetre;
-}
-
-struct Velocity
-{
-    alias Dimension = VelocityDimension;
-    alias CanonicalUnit = MetresPerSecond;
-
-    template QuotientWith(Rhs)
-    {
-        static if (is(Rhs == Time))
-            alias QuotientWith = Acceleration;
-        else
-            alias QuotientWith = void;
-    }
-}
-
-struct Acceleration
-{
-    alias Dimension = AccelerationDimension;
-    alias CanonicalUnit = MetresPerSecondSquared;
 }
 
 // Consumer-defined result: same Area dimension, different canonical scale.
