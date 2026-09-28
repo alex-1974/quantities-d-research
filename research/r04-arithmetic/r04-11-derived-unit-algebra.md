@@ -537,3 +537,35 @@ Extended invariant:
 Fractional canonical rescaling does not make the semantic relation invalid; it
 only removes the total direct integral operator. A future explicit exact /
 checked product API can still succeed for selected values.
+
+### Exact arithmetic result carrier
+
+The shared exact-arithmetic result carrier probe passes on both baseline
+compilers.
+
+The evidence supports sharing only the constructive payload/failure mechanism,
+not the semantic failure domain itself:
+
+- product failures: inexact, overflow;
+- division failures: inexact, divisionByZero;
+- no broad ArithmeticStatus is required.
+
+A generic internal carrier of the form
+
+    ExactArithmeticResult!(T, Failure)
+
+can provide the common state machine:
+
+- exact success carries a payload;
+- failure carries an operation-specific Failure enum;
+- contradictory public states are not constructible;
+- tryValue / tryFailure provide read access;
+- default initialization remains a valid failure state when the chosen Failure
+  enum gives its zero value the intended default semantics.
+
+Public API names should remain operation-specific where that improves meaning.
+For example, ProductResult!T and DivisionResult!T may be aliases or thin
+wrappers over the shared internal carrier without forcing their failure enums
+into one common status type.
+
+Decision direction: **share mechanics, preserve semantic status domains.**
