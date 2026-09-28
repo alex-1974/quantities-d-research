@@ -9,6 +9,7 @@ conflict="$here/r04_11_negative_conflict.d"
 two_foreign="$here/r04_11_two_foreign_specs.d"
 third_customization="$here/r04_11_third_customization_probe.d"
 relation_api="$here/r04_11_relation_api_probe.d"
+integral_rescale="$here/r04_11_integral_rescale_probe.d"
 
 compilers=()
 command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
@@ -33,6 +34,13 @@ for compiler in "${compilers[@]}"; do
     echo "=== $compiler: external consumer probe ==="
     if ! "$compiler" -c "$consumer" "$probe" -I"$here" -of=/tmp/r04_11_consumer_${compiler}.o; then
         failed=1
+    fi
+
+    echo "=== $compiler: integral rescale classification ==="
+    if ! "$compiler" -c "$integral_rescale" "$third_customization" "$probe" -I"$here" -of=/tmp/r04_11_rescale_${compiler}.o; then
+        failed=1
+    else
+        echo "PASS: integral derived-unit rescale classification"
     fi
 
     echo "=== $compiler: relation API probe ==="
