@@ -97,20 +97,46 @@ template sameDimension(X, Y)
         allTermsMatch!(Y.TermsList, X, Y);
 }
 
+// Make every query use distinct dimension types so compiler memoization cannot
+// collapse the benchmark to one semantic comparison. The extra marker exponent
+// is identical on both sides of a query and therefore does not change whether
+// the compared dimensions are mathematically equal.
+struct QueryTag(size_t N) {}
+
+template NativeDimension(size_t N)
+{
+    alias NativeDimension = Dimension!(
+        A.TermsList.Items,
+        DimTerm!(QueryTag!N, 1));
+}
+
+template StructuralLeft(size_t N)
+{
+    alias StructuralLeft = Dimension!(
+        A.TermsList.Items,
+        DimTerm!(QueryTag!N, 1));
+}
+
+template StructuralRight(size_t N)
+{
+    alias StructuralRight = Dimension!(
+        DimTerm!(QueryTag!N, 1),
+        B.TermsList.Items);
+}
+
 template NativeQuery(size_t N)
 {
-    // Same canonical type on both sides: production fast path after
-    // normalization.
-    enum NativeQuery = is(A == A);
+    alias D = NativeDimension!N;
+    enum NativeQuery = is(D == D);
 }
 
 template StructuralQuery(size_t N)
 {
-    // Same mathematical contents in reverse order.
-    enum StructuralQuery = sameDimension!(A, B);
+    enum StructuralQuery =
+        sameDimension!(StructuralLeft!N, StructuralRight!N);
 }
 
-enum queryCount = 256;
+enum queryCount = 4096;
 
 version (NativeCost)
 {
