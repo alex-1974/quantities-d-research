@@ -5,7 +5,7 @@ import std.meta : AliasSeq;
 // R04.11 research: can an open dimension model canonicalize without a
 // core-owned global TagRank table?
 
-template DimTerm(Tag, int Exponent)
+struct DimTerm(Tag, int Exponent)
 {
     alias DimensionTag = Tag;
     enum exponent = Exponent;
