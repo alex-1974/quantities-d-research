@@ -16,6 +16,7 @@ open_canonicalization="$here/r04_11_open_canonicalization_probe.d"
 structural_dimension="$here/r04_11_structural_dimension_probe.d"
 dimension_key="$here/r04_11_dimension_key_probe.d"
 canonical_algebra="$here/r04_11_canonical_dimension_algebra_probe.d"
+unit_algebra="$here/r04_11_unit_algebra_probe.d"
 
 compilers=()
 command -v dmd >/dev/null 2>&1 && compilers+=(dmd)
@@ -80,6 +81,15 @@ for compiler in "${compilers[@]}"; do
         failed=1
     fi
     rm -f "$algebra_exe"
+
+    echo "=== $compiler: unit algebra ==="
+    unit_exe="/tmp/r04_11_unit_algebra_${compiler}"
+    if ! "$compiler" "$unit_algebra" -I"$here" -of="$unit_exe"; then
+        failed=1
+    elif ! "$unit_exe"; then
+        failed=1
+    fi
+    rm -f "$unit_exe"
 
     echo "=== $compiler: scaled integral product range ==="
     if ! "$compiler" -c "$scaled_mul_rep" -I"$here" -of=/tmp/r04_11_scaled_mul_${compiler}.o; then
