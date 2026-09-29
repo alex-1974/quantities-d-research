@@ -341,3 +341,29 @@ It should prove overflow predicates on original operand values, CTFE, and
 OM should remain separately classified and compile-time unavailable during that
 probe. A later probe can decide whether OM deserves a wider tagged result,
 128-bit internal/result representation, or simply remains unsupported.
+
+
+## Probe 3 result — O64 overflow predicates
+
+Verified locally on x86_64 with both baseline compilers:
+
+- DMD 2.111.0: PASS
+- LDC 1.41.0: PASS
+
+The prototype demonstrates for the tested O64 domains:
+
+- representability is checked before the potentially overflowing operation;
+- `long.min` and `long.max` boundary cases behave as expected;
+- signed magnitude handling admits `long.min * 1` and rejects
+  `long.min * -1`;
+- unsigned max boundaries behave as expected;
+- mixed-width O64 examples work;
+- the implementation is usable at CTFE;
+- the prototype compiles as `@safe pure nothrow @nogc`.
+
+This proves feasibility, not completeness.
+
+Before a Quantity-shaped API probe, the predicates require an independent
+adversarial oracle. Probe 4 will compare their classification and successful
+values against exact `BigInt` arithmetic over systematic boundary sets.
+`BigInt` is research-only oracle machinery and is not proposed for production.
