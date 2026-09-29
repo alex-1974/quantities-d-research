@@ -169,6 +169,14 @@ template ExactQuotientResultRep(Lhs, Rhs, ulong N, ulong D)
         alias ExactQuotientResultRep = void;
 }
 
+alias ByteByteEnvelope = ExactQuotientEnvelope!(byte, byte, 1, 1);
+static assert(ByteByteEnvelope.positiveSourceMagnitude == 128);
+static assert(ByteByteEnvelope.negativeSourceMagnitude == 128);
+static assert(ByteByteEnvelope.hasNegative);
+static assert(!EnvelopeFits!(ByteByteEnvelope, byte));
+static assert(!EnvelopeFits!(ByteByteEnvelope, ubyte));
+static assert(EnvelopeFits!(ByteByteEnvelope, short));
+
 // Signed/signed unit-scale division: the positive min/-1 witness forces one
 // wider signed representation.
 static assert(is(ExactQuotientResultRep!(byte, byte, 1, 1) == short));
