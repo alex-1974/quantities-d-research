@@ -192,3 +192,43 @@ that a selected result Spec has
 `DivideDimension!(Lhs.Dimension, Rhs.Dimension)`; that validation is the next
 probe and must use the promoted canonical Dimension algebra rather than local
 placeholder semantics.
+
+
+## Probe 3 result — quotient Unit and canonical rescale
+
+The Unit/scale probe isolates the exact scale relation
+
+```text
+MathematicalUnit = Lhs.CanonicalUnit / Rhs.CanonicalUnit
+CanonicalRescale = MathematicalUnit / ResultSpec.CanonicalUnit
+```
+
+Representative exact results:
+
+| Mathematical quotient | Result canonical unit | Exact rescale |
+|---|---|---:|
+| m / m | unit ratio | 1 |
+| km / m | unit ratio | 1000 |
+| m / km | unit ratio | 1/1000 |
+| km / h | m/s | 5/18 |
+| km / h | km/h | 1 |
+| m / km² | 1/m | 1/1,000,000 |
+| m / km² | 1/km | 1/1000 |
+
+This confirms that Dimension validation and Unit scaling are independent.
+A physically valid quotient may still require a non-integral exact canonical
+rescale.
+
+For integral Quantity/Quantity division the numerical kernel should therefore
+model the complete rational expression rather than first performing integer
+division and then applying a scale. Conceptually:
+
+```text
+(lhsCanonical * scaleNumerator)
+--------------------------------
+(rhsCanonical * scaleDenominator)
+```
+
+The next probe must investigate cross-cancellation before multiplication and
+division, zero-denominator handling, signed extrema, and which result Rep can
+represent an exact integral result without intermediate overflow.
