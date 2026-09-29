@@ -180,3 +180,59 @@ R04.14 is promotable only if:
 - code-generation cost is measured;
 - production API remains quantity-focused rather than exposing a generic
   checked-integer subsystem.
+
+
+## Probe 1 result — Class-O surface
+
+Verified locally on x86_64 with both baseline compilers:
+
+- DMD 2.111.0: PASS
+- LDC 1.41.0: PASS
+- identical output on both compilers.
+
+For each of addition, subtraction, and multiplication:
+
+- 36 of 64 ordered Rep pairs are Class W;
+- 28 of 64 ordered Rep pairs are Class O;
+- the W/O classification matrix is identical across all three operations.
+
+With Rep order `byte ubyte short ushort int uint long ulong`, every operation
+printed:
+
+```text
+WWWWWWOO
+WWWWWWOO
+WWWWWWOO
+WWWWWWOO
+WWWWWWOO
+WWWWWWOO
+OOOOOOOO
+OOOOOOOO
+```
+
+Therefore, under the current production ResultRep oracle:
+
+> An integral +, -, or * pair is Class O exactly when at least one operand Rep
+> is `long` or `ulong`.
+
+There are no Class-O islands among the six Reps from `byte` through `uint`.
+
+This substantially narrows Probe 2. The checked ResultRep problem is a
+64-bit-boundary problem, not a general 8x8 promotion problem.
+
+### Consequence for Probe 2
+
+Probe 2 must still examine all 28 ordered Class-O pairs, but they fall into a
+small number of structural families:
+
+1. `long` with signed <=32-bit;
+2. `long` with unsigned <=32-bit;
+3. `ulong` with signed <=32-bit;
+4. `ulong` with unsigned <=32-bit;
+5. `long,long`;
+6. `long,ulong` and `ulong,long`;
+7. `ulong,ulong`.
+
+Addition and multiplication are mathematically symmetric, but subtraction is
+ordered. ResultRep selection must therefore be proven per operation even though
+Probe 1 happened to produce the same W/O bitmap.
