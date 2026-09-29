@@ -1,0 +1,5 @@
+{
+    "name": "r04-14-class-o-surface",
+    "description": "R04.14 Probe 1: classify Class-W and Class-O integral arithmetic pairs",
+    "targetType": "executable"
+}
