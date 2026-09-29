@@ -602,3 +602,198 @@ work before promotion includes:
 - negative compile-contract matrix;
 - DMD/LDC optimized codegen and performance comparison;
 - production documentation and Fast Gate.
+
+## Probes 9–23 — carrier, codegen, and performance closure
+
+The remaining R04.14 work separated three concerns that must not be conflated:
+
+1. public result-state semantics;
+2. primitive checked-integer implementation;
+3. checked canonical-rescale implementation.
+
+The historical probe sources are retained as research evidence. Generated binaries,
+object files, assembly outputs, and benchmark executables are not retained.
+
+### Probe 9 — result-carrier policy
+
+The carrier comparison established that the public failure space should remain
+operation-specific rather than introducing one universal arithmetic status.
+
+The relevant result spaces are:
+
+- unscaled checked O64 arithmetic: `value | overflow`;
+- checked canonical-rescaled product: `exact | inexact | overflow`;
+- existing exact product rescaling: `value | ProductFailure.inexact`;
+- existing division: `exact | inexact | divisionByZero`.
+
+A generic internal carrier remains possible, but the public API should expose only
+the failure states meaningful to the operation.
+
+The default-constructed experimental checked carrier remains in a failure state
+rather than silently containing a successful zero value.
+
+### Probes 10–18 — checked primitive implementation research
+
+The code-generation probes evaluated `core.checkedint`, carrier layout effects,
+portable split multiplication, DMD checked-multiply evolution, inline assembly,
+ImportC/compiler-builtin routes, and wider-integer alternatives.
+
+The useful compiler boundary is backend-specific:
+
+- LDC lowers the relevant checked arithmetic primitives efficiently to native
+  overflow-aware operations;
+- DMD addition/subtraction are usable but slower;
+- DMD signed 64-bit checked multiplication remains substantially more expensive;
+- DMD unsigned checked multiplication changes implementation across compiler
+  versions and does not provide a stable version-specific optimization policy.
+
+The following alternatives did not justify production adoption:
+
+- public carrier/ABI changes motivated by compiler code generation;
+- split-32 multiplication;
+- custom inline assembly;
+- ImportC overflow wrappers;
+- software 128-bit arithmetic;
+- signed-via-unsigned multiplication as a general replacement.
+
+Compiler behavior therefore must not leak into the public checked-arithmetic API.
+
+Two retained historical probes are intentionally not part of a portable
+baseline compile gate:
+
+- `r04_14_dmd_inline_asm` is a DMD-specific feasibility probe. It builds with
+  DMD 2.111.0, while LDC 1.41.0 rejects `pragma(inline, true)` on the contained
+  DMD-style inline assembly. This incompatibility is part of the evidence for
+  rejecting the custom-inline-assembly direction.
+- `r04_14_dmd_wide_mul` records the rejected built-in `cent`/`ucent`
+  experiment. The baseline DMD 2.111.0 and LDC 1.41.0 diagnose those built-in
+  types as obsolete and direct users to `core.int128.Cent`. The probe is
+  retained as historical source evidence rather than maintained as a current
+  buildable implementation.
+
+All other retained DUB probe projects compile with both baseline compilers, and
+both retained R04.22 matrix sources compile directly with both baseline
+compilers.
+
+### Probes 19–22 — O64 primitive performance boundary
+
+The primitive performance probes narrowed the actual O64 hot operations to the
+same-domain 64-bit cases needed by the checked API.
+
+The corrected operation-specific matrix covers:
+
+- checked `long + long`;
+- checked `ulong + ulong`;
+- checked `long - long`;
+- checked `long * long`;
+- checked `ulong * ulong`.
+
+`ulong - ulong` is not an O64 public operation because its mathematical result
+domain is OM.
+
+The measurements confirm:
+
+- LDC produces efficient native checked arithmetic;
+- DMD checked add/sub carry measurable but comparatively small overhead;
+- DMD checked 64-bit multiplication is the major compiler/toolchain outlier;
+- newer DMD versions do not establish a monotonic or sufficiently stable
+  performance rule suitable for a DMD-version matrix.
+
+The earlier common matrix is retained as historical evidence in
+`r04_22_o64_primitive_matrix/source/common_matrix.d`. A byte-identical
+`source/app.d` working copy was intentionally not retained. The final
+operation-specific measurement source is
+`r04_22_o64_primitive_matrix/source/operation_matrix.d`.
+
+The primitive research therefore closes with `core.checkedint` as the relevant
+compiler/runtime primitive where it is advantageous, while avoiding a
+compiler-version-dependent public or architectural policy.
+
+### Probe 23 — checked canonical-rescale closure
+
+R04.23 applies the primitive findings to the actual checked product-rescale hot
+path.
+
+The production operation is mathematically:
+
+    (lhs * rhs * Numerator) / Denominator
+
+where the ratio is a normalized `ExactRatio`.
+
+The production unit contract requires support for:
+
+- positive scale numerators;
+- negative scale numerators;
+- zero scale numerators;
+- positive normalized denominators.
+
+The final semantic kernel therefore:
+
+1. returns exact zero at compile time when `Numerator == 0`;
+2. computes the result sign from lhs, rhs, and numerator signs;
+3. converts values to unsigned magnitudes without overflowing on `long.min`;
+4. cancels the denominator against lhs and rhs magnitudes;
+5. uses normalized-ratio invariants to avoid redundant numerator cancellation;
+6. returns `inexact` if a denominator remains;
+7. performs checked magnitude multiplication;
+8. checks the final signed magnitude limit;
+9. reconstructs the exact signed result, including `long.min`.
+
+An independent `BigInt` oracle performed 10,004 comparisons per tested compiler
+with no discrepancy for the final signed/zero kernel.
+
+The final bounds-check-controlled benchmark preserves the same backend conclusion
+with bounds checking both enabled and disabled.
+
+### Backend decision
+
+The checked canonical-rescale implementation should use one semantic kernel with
+a centralized checked-multiplication backend:
+
+    version (LDC)
+    {
+        // core.checkedint.mulu-backed checked magnitude multiplication
+    }
+    else
+    {
+        // portable division-bound checked magnitude multiplication
+    }
+
+This distinction is an implementation/backend capability choice.
+
+It must not:
+
+- alter public API semantics;
+- create a DMD-version matrix;
+- select a public carrier representation from compiler ABI behavior;
+- change `exactMul` into an overflow-checking operation.
+
+### R04.14 research conclusion
+
+The R04.14 research supports the following architecture:
+
+- **Class W** — direct integral operator; overflow is impossible for every
+  representable operand value.
+- **O64** — explicit named checked operation with a natural built-in 64-bit
+  ResultRep.
+- **OM** — compile-time unavailable unless a deliberate wider public integer
+  representation policy is introduced separately.
+
+For unscaled O64 operations the runtime result is:
+
+    value | overflow
+
+For checked canonical-rescaled products the runtime result is:
+
+    exact | inexact | overflow
+
+Semantic validity is always resolved before representation/runtime checking.
+Checked arithmetic does not make an otherwise invalid Quantity operation valid.
+
+The checked canonical-rescale mechanism is semantically and experimentally closed
+for the R04.14 research scope. Further primitive microbenchmark exploration is
+not required before production integration.
+
+Production promotion remains a separate implementation step and still requires
+the normal workspace API, documentation, negative-test, compiler-matrix, and Fast
+Gate review.

@@ -1,0 +1,5 @@
+{
+    "name": "r04-14-dmd-inline-asm",
+    "description": "R04.14 Probe 17: DMD inline-asm inlining feasibility",
+    "targetType": "executable"
+}

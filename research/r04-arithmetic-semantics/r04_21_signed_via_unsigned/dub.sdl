@@ -1,0 +1,4 @@
+name "r04-21-signed-via-unsigned"
+description "R04.21 signed checked multiply via unsigned magnitude"
+targetType "executable"
+sourcePaths "source"

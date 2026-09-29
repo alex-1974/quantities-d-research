@@ -1,0 +1,5 @@
+{
+    "name": "r04-14-split-mul",
+    "description": "R04.14 Probe 12a: division-free split32 checked ulong multiplication",
+    "targetType": "executable"
+}

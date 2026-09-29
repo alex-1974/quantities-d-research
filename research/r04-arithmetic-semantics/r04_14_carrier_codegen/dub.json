@@ -1,0 +1,5 @@
+{
+    "name": "r04-14-carrier-codegen",
+    "description": "R04.14 Probe 13: checked-result carrier representation codegen",
+    "targetType": "executable"
+}

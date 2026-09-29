@@ -1,0 +1,5 @@
+{
+    "name": "r04-14-dmd-wide-mul",
+    "description": "R04.14 Probe 12: widened 128-bit checked multiplication",
+    "targetType": "executable"
+}

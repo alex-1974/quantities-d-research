@@ -1,0 +1,4 @@
+name "r04-19-o64-primitive-matrix"
+description "R04.19 O64 primitive codegen matrix"
+targetType "executable"
+sourcePaths "source"

@@ -1,0 +1,5 @@
+{
+    "name": "r04-14-core-checkedint",
+    "description": "R04.14 Probe 11: core.checkedint viability",
+    "targetType": "executable"
+}

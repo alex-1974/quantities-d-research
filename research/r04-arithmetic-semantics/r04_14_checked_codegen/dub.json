@@ -1,0 +1,5 @@
+{
+  "name": "r04-14-checked-codegen",
+  "description": "R04.14 Probe 10: code generation of portable O64 checked arithmetic",
+  "targetType": "executable"
+}

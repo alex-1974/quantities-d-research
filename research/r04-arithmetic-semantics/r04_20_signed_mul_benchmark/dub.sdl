@@ -1,0 +1,4 @@
+name "r04-20-signed-mul-benchmark"
+description "R04.20 signed checked multiplication benchmark"
+targetType "executable"
+sourcePaths "source"

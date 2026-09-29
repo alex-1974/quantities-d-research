@@ -1,0 +1,5 @@
+{
+    "name": "r04-14-checked-mul-benchmark",
+    "description": "R04.14 Probe 16: runtime cost of core.checkedint.mulu",
+    "targetType": "executable"
+}
