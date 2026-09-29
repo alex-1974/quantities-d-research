@@ -532,3 +532,26 @@ ABI decisions and are outside the current M3 scope.
 
 This conclusion preserves the library's existing built-in-Rep model and avoids
 turning Class-O support into a general extended-integer subsystem.
+
+
+## Probe 7 result — checked rescale state semantics
+
+Verified locally on x86_64 with DMD 2.111.0 and LDC 1.41.0.
+
+Both compilers passed the exact-oracle state model:
+
+- `exact`
+- `inexact`
+- `overflow`
+
+The classification is defined by the mathematical final result, not by
+fixed-width evaluation order:
+
+1. if the rational result is non-integral -> `inexact`;
+2. otherwise, if the exact integer is outside ResultRep -> `overflow`;
+3. otherwise -> `exact`.
+
+Consequently, an intermediate wider than ResultRep is not itself overflow.
+For example, `long.max * 2 / 2` is exact `long.max`.
+
+This establishes the semantic target for a fixed-width implementation.
