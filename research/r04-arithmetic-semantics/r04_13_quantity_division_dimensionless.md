@@ -271,3 +271,47 @@ division until the Rep/range probe proves otherwise.
 
 The magnitude `2^63` from `long.min / -1` also demonstrates why arithmetic
 correctness and result-Rep admissibility remain separate gates.
+
+
+## Probe 5 — Result Rep versus intermediate range
+
+The Rep/range probe separates two questions that must not be conflated:
+
+1. can the final exact quotient be represented by the selected ResultRep?
+2. can the scaled rational expression be evaluated exactly without overflowing
+   the chosen intermediate representation?
+
+A wider ResultRep does not automatically solve (2). Cross-cancellation can
+turn an apparently overflowing expression into a small exact one, while a
+non-cancellable scale numerator can still exceed a bounded intermediate domain.
+
+### Direct integral division
+
+Ordinary built-in integral divisor Reps contain zero. Therefore a direct
+Quantity/Quantity `/` operation cannot satisfy the existing total-safety
+invariant over the complete operand Rep domains:
+
+```text
+if an integral quantities-d arithmetic operator compiles,
+it is valid for every value representable by its operand Reps
+```
+
+Division-by-zero alone disproves totality. A future stronger non-zero divisor
+type could change that premise, but R04.13 does not introduce such a type.
+
+This strengthens the initial direction: integral Quantity/Quantity division
+belongs on a named exact/checked operation, not an unchecked direct `/`
+operator.
+
+### Failure-state consequence
+
+`divisionByZero` remains intrinsically reachable for ordinary integral RHS
+Reps and cannot be compiled away by a range proof.
+
+`overflow` is different. It may eventually become unreachable if research
+finds an exact intermediate strategy and a ResultRep proof that cover every
+admitted call. That proof does not yet exist, so the status remains live in
+research.
+
+The existing scalar `QuotientRep` rule is useful evidence for signed extrema
+but is insufficient by itself for scaled Quantity/Quantity quotients.
