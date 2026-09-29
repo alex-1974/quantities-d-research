@@ -315,3 +315,61 @@ research.
 
 The existing scalar `QuotientRep` rule is useful evidence for signed extrema
 but is insufficient by itself for scaled Quantity/Quantity quotients.
+
+
+## Probe 6 — factorized exact evaluation
+
+A stronger exact-integral algorithm does not need to form either full rational
+intermediate product.
+
+For
+
+```text
+a * n
+-----
+b * d
+```
+
+where `a/b` are operand magnitudes and `n/d` is the exact canonical
+rescale, cancel every numerator factor against every denominator factor first.
+
+After complete pairwise cancellation:
+
+- if either remaining denominator factor is not `1`, the mathematical result
+  is not an integer and the operation is `inexact`;
+- otherwise the exact result is the remaining `a * n`;
+- before forming that one product, compare `n <= ResultLimit / a`.
+
+This means a dedicated wider rational intermediate is not inherently required
+for exact integral Quantity/Quantity division.
+
+### Refined failure model
+
+The earlier Probe 4 `overflow` outcome was a property of its eager bounded
+intermediate algorithm, not necessarily of the operation semantics.
+
+With factorized evaluation, the meaningful outcomes become:
+
+```text
+exact
+inexact
+divisionByZero
+resultOutOfRange
+```
+
+Whether `resultOutOfRange` should exist in the public result domain is still a
+Rep-policy question. If a compile-time ResultRep rule can guarantee that every
+exact result admitted by the API fits, it can be removed just as product
+overflow was removed. If not, it remains a genuine runtime result.
+
+Witnesses include:
+
+- `long.min / 1`: exact and representable in signed long;
+- `long.min / -1`: exact mathematical magnitude `2^63`, outside signed
+  long but representable in a suitable wider/unsigned magnitude domain;
+- large factors that cancel completely before multiplication;
+- large non-cancellable scale factors that produce a genuinely out-of-range
+  final exact result.
+
+The next Rep-policy probe should therefore focus on final-result bounds, not on
+constructing a universally wider intermediate integer.
