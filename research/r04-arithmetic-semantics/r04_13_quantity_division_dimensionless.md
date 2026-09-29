@@ -560,3 +560,144 @@ divisionByZero
 ```
 
 This is research evidence, not yet a production API promotion decision.
+
+
+## R04.13 promotion review
+
+### Decision status
+
+The integral Quantity/Quantity division model is sufficiently supported to
+promote its architectural rules into M3 production work, subject to the
+production compile-contract gates below.
+
+This promotion does **not** imply an unchecked direct integral `operator /`.
+Ordinary integral RHS representations contain zero, so the existing total
+operator-safety invariant cannot be satisfied over the complete operand domain.
+
+### Promoted semantic rules
+
+1. **Spec algebra remains explicit.**
+   Quotient Dimension alone never invents a semantic ResultSpec.
+
+2. **Dimensionless is a Dimension, not a semantic Spec.**
+   `Length / Length` therefore requires an explicit quotient relation just as
+   any other semantic quotient does.
+
+3. **Operand-owned quotient customization mirrors product customization.**
+   The intrinsic hooks are:
+   - `Lhs.QuotientWith!Rhs`
+   - `Rhs.QuotientFromLeft!Lhs`
+
+   If both produce non-void results, they must agree.
+
+4. **Foreign/foreign relations use an explicit provider.**
+   The external provider shape is:
+   - `Relations.Quotient!(LhsSpec, RhsSpec)`
+
+   It is ordered, authoritative, and has no implicit fallback to operand-owned
+   relations.
+
+5. **ResultSpec validation is mandatory.**
+   The selected result must satisfy the QuantitySpec contract and:
+   `ResultSpec.Dimension == DivideDimension!(Lhs.Dimension, Rhs.Dimension)`.
+
+6. **Unit algebra is independent of semantic resolution.**
+   The mathematical quotient unit is:
+   `DivideUnit!(Lhs.CanonicalUnit, Rhs.CanonicalUnit)`.
+
+   Canonical storage uses the exact ratio from that mathematical unit to
+   `ResultSpec.CanonicalUnit`.
+
+7. **Integral ResultRep is a compile-time safety gate.**
+   Positive and negative quotient endpoints are proven separately, including
+   the fixed exact canonical rescale. The smallest sufficient built-in
+   integral representation is selected. If none exists, the operation is not
+   admitted.
+
+8. **Runtime evaluation is factorized.**
+   Zero divisor is detected first. Numerator and denominator factors are then
+   fully cross-cancelled before any final multiplication.
+
+9. **Runtime status domain remains narrow.**
+   For admitted calls:
+   - `exact`
+   - `inexact`
+   - `divisionByZero`
+
+   A separate runtime overflow/result-range status is not required because
+   representational safety is proven before the operation participates.
+
+10. **Quantity/scalar division remains a distinct operation class.**
+    A raw scalar is not modeled as a dimensionless Quantity merely to unify
+    implementations. Existing scalar exact-division semantics remain
+    conceptually separate.
+
+### Initial production API direction
+
+The first production slice should be the named exact operation, not direct
+integral `/`:
+
+```d
+lhs.exactDiv(rhs)
+lhs.exactDiv!Relations(rhs)
+```
+
+The overload without a relation provider uses the operand-owned quotient
+resolver. The explicit-provider overload uses only the supplied provider.
+
+No generic dimensionless semantic Spec is introduced by this slice.
+
+### Required production compile-contract gates
+
+Positive gates:
+
+- intrinsic quotient relation resolves a valid ResultSpec;
+- reverse operand-owned relation resolves;
+- matching forward+reverse relations resolve;
+- external relation provider resolves foreign/foreign Specs;
+- dimensionless quotient works when an explicit dimensionless ResultSpec is
+  supplied;
+- derived quotient such as Area/Length -> Length works when explicitly
+  related;
+- exact non-unit canonical rescale succeeds;
+- DMD 2.111 and LDC 1.41 agree;
+- documented attributes are checked where claimed.
+
+Negative gates:
+
+- missing intrinsic quotient relation;
+- conflicting forward/reverse quotient relations;
+- selected ResultSpec is not a QuantitySpec;
+- selected ResultSpec has the wrong quotient Dimension;
+- external provider has no ordered relation;
+- external provider selects wrong ResultSpec Dimension;
+- external provider is authoritative: no fallback to intrinsic relation;
+- no built-in ResultRep satisfies the endpoint proof;
+- direct integral Quantity/Quantity `/` remains unavailable;
+- dimensionless physical result does not silently become a raw scalar;
+- dimensionless physical result does not silently select a generic semantic
+  Spec;
+- zero-divisor behavior is represented by the result status, not UB or a raw
+  D integral division trap;
+- inexact canonical quotient does not truncate.
+
+### Explicitly not promoted by R04.13
+
+- floating Quantity/Quantity division semantics;
+- unchecked direct integral Quantity/Quantity `/`;
+- a universal Ratio/Dimensionless semantic Spec;
+- arbitrary-precision result representations;
+- automatic physics semantics such as Length/Time -> Velocity without an
+  explicit relation;
+- global relation registries;
+- a broad arithmetic failure enum.
+
+### Promotion conclusion
+
+R04.13 is ready to feed an M3 production slice for **named exact integral
+Quantity/Quantity division with explicit semantic relations**.
+
+The production implementation should reuse promoted Dimension and Unit algebra
+and may reuse existing result-carrier mechanics, but should not mechanically
+copy the research probes. Production code must retain the repository's
+existing API compatibility and Fast Gate requirements.
