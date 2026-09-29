@@ -367,3 +367,47 @@ Before a Quantity-shaped API probe, the predicates require an independent
 adversarial oracle. Probe 4 will compare their classification and successful
 values against exact `BigInt` arithmetic over systematic boundary sets.
 `BigInt` is research-only oracle machinery and is not proposed for production.
+
+
+## Probe 4 result — adversarial exact oracle
+
+Verified locally on x86_64:
+
+- DMD 2.111.0: PASS — 917 exact-oracle comparisons;
+- LDC 1.41.0: PASS — 917 exact-oracle comparisons;
+- total observed comparisons across both compiler runs: 1,834;
+- no classification or successful-value mismatch.
+
+The research-only `BigInt` oracle independently checked both:
+
+1. success versus overflow classification;
+2. exact returned value whenever the fixed-width predicate admitted success.
+
+The tested boundary sets include signed and unsigned endpoints, adjacent values,
+zero, small magnitudes, half-range values, and the signed/unsigned 64-bit
+transition.
+
+This materially strengthens the O64 result: the portable precondition
+predicates are not merely plausible on hand-picked examples; they agree with
+exact mathematical arithmetic over the systematic adversarial set on both
+baseline compilers.
+
+It does not prove all possible 64-bit values exhaustively, so the production
+promotion gate still requires direct reasoning/tests for each predicate.
+
+## Next step — Quantity-shaped integration
+
+Probe 5 may now wrap O64 in a minimal Quantity-shaped checked operation while
+preserving the existing M3 architecture:
+
+- Class-W direct operators remain unchanged;
+- Class-O checked arithmetic is named, never an unchecked direct operator;
+- semantic validity is resolved before representation/runtime checking;
+- same-Spec addition/subtraction retain their existing semantic gate;
+- scalar multiplication retains Quantity Spec;
+- Quantity x Quantity multiplication must resolve ProductResultSpec before
+  applying O64 representation logic;
+- OM remains compile-time unavailable.
+
+The probe should test API shape, CTFE, attributes, and compile-negative OM /
+semantic-invalid cases. It is still research and must not modify production.
