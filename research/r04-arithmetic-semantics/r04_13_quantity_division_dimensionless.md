@@ -506,3 +506,57 @@ This confirms the D template formulation and the tested endpoint/ResultRep
 assertions on the workspace baseline compilers. It does not by itself promote
 the research design to production or substitute for running the complete
 R04.13 probe set.
+
+
+## Complete R04.13 baseline compiler evidence
+
+The complete R04.13 probe set was verified locally on x86_64 Linux from
+research commit `10fc0ab176c45194ad9f5eb14c9b2e9f5f23ba99`.
+
+Baseline compilers:
+
+- DMD64 v2.111.0
+- LDC 1.41.0, based on DMD v2.111.0 and LLVM 19.1.7
+
+Compilation used `-preview=dip1000`.
+
+All eight R04.13 probes passed on both compilers:
+
+1. `r04_13_quotient_semantic_resolver_probe.d`
+2. `r04_13_quotient_dimension_validation_probe.d`
+3. `r04_13_quotient_unit_rescale_probe.d`
+4. `r04_13_exact_quotient_kernel_probe.d`
+5. `r04_13_quotient_rep_range_probe.d`
+6. `r04_13_factorized_exact_quotient_probe.d`
+7. `r04_13_exact_quotient_result_bound_probe.d`
+8. `r04_13_exact_quotient_endpoint_rep_probe.d`
+
+No compiler diagnostics were emitted.
+
+### Evidence-backed R04.13 direction
+
+The combined probes now support the following integral Quantity/Quantity
+division architecture on the baseline compilers:
+
+1. resolve semantic ResultSpec explicitly through operand-owned quotient hooks
+   or an explicit external relation provider;
+2. validate the quotient Dimension independently;
+3. derive the exact mathematical quotient Unit and canonical rescale;
+4. select a ResultRep through asymmetric positive/negative endpoint proof;
+5. reject unsupported Rep/scale combinations at compile time;
+6. at runtime, reject zero divisor;
+7. fully cross-cancel numerator and denominator factors before multiplication;
+8. if denominator factors remain, return `inexact`;
+9. otherwise construct the exact result in the statically proven ResultRep.
+
+For admitted integral calls, representational range failure is therefore a
+compile-time concern rather than a runtime status. The runtime semantic result
+domain remains:
+
+```text
+exact
+inexact
+divisionByZero
+```
+
+This is research evidence, not yet a production API promotion decision.
