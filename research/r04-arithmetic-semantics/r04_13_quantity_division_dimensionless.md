@@ -232,3 +232,42 @@ division and then applying a scale. Conceptually:
 The next probe must investigate cross-cancellation before multiplication and
 division, zero-denominator handling, signed extrema, and which result Rep can
 represent an exact integral result without intermediate overflow.
+
+
+## Probe 4 — exact scaled integral quotient kernel
+
+The first bounded-magnitude kernel evaluates the complete rational expression
+
+```text
+lhs * scaleNumerator
+--------------------
+rhs * scaleDenominator
+```
+
+by separating sign from unsigned magnitude and cross-cancelling numerator and
+denominator factors before multiplication.
+
+The probe covers:
+
+- exact, inexact, and division-by-zero results;
+- positive and negative operands;
+- `long.min` without evaluating `-long.min`;
+- the mathematical `long.min / -1 == 2^63` magnitude;
+- cancellation that prevents otherwise overflowing intermediate products;
+- the `5/18` km/h -> m/s rescale;
+- rational canonical rescale such as `1/1000`;
+- a non-cancellable bounded-intermediate overflow case;
+- CTFE plus `@safe pure nothrow @nogc` on the probe kernel.
+
+### Current conclusion
+
+Cross-cancellation is necessary but does not by itself prove that all admitted
+quotients fit a fixed bounded intermediate representation.
+
+Unlike the current product path, R04.13 has not yet established a compile-time
+range gate that makes runtime quotient overflow unreachable. Therefore
+`overflow` must remain a live research outcome for Quantity/Quantity exact
+division until the Rep/range probe proves otherwise.
+
+The magnitude `2^63` from `long.min / -1` also demonstrates why arithmetic
+correctness and result-Rep admissibility remain separate gates.
