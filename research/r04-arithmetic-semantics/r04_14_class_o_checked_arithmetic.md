@@ -475,3 +475,60 @@ R04.14 has not yet established production semantics for:
 These should remain separate research questions. In particular, solving
 rescaling must not be used to smuggle in an OM policy, and solving OM must not
 change the proven O64 core.
+
+
+## Probe 6 result — OM exact result domains
+
+Verified locally on x86_64 with identical output from DMD 2.111.0 and
+LDC 1.41.0.
+
+Representative exact ranges:
+
+- `int + ulong`: [-2147483648, 18446744075857035262]
+- `long + ulong`: [-9223372036854775808, 27670116110564327422]
+- `int * ulong`:
+  [-39614081257132168794624491520,
+    39614081238685424720914939905]
+- `long * ulong`:
+  [-170141183460469231722463931679029329920,
+    170141183460469231704017187605319778305]
+- `ulong - ulong`:
+  [-18446744073709551615, 18446744073709551615]
+- `long - ulong`:
+  [-27670116110564327423, 9223372036854775807]
+- `ulong - long`:
+  [-9223372036854775807, 27670116110564327423]
+
+Every audited OM range fits neither `long` nor `ulong`.
+
+### Consequence
+
+OM is not merely an O64 operation that needs a wider temporary for overflow
+detection. The mathematical success domain itself crosses the built-in
+64-bit signed/unsigned boundary.
+
+Therefore choosing `long` or `ulong` as the public checked ResultRep would
+introduce an additional representation policy: some mathematically valid
+results that fit the other 64-bit interpretation would be reported as
+overflow solely because of the selected public domain.
+
+For multiplication the issue is stronger. Mixed `long * ulong` reaches a
+range close to the signed 128-bit endpoints, so a faithful fixed-width result
+domain is genuinely wider than 64 bits.
+
+### R04.14 OM conclusion
+
+The O64 `value | overflow` model must not be generalized mechanically to OM.
+
+The conservative quantities-d policy is:
+
+> OM remains compile-time unavailable unless quantities-d deliberately adopts
+> a wider public integral representation policy.
+
+An internal 128-bit helper is insufficient justification for such a public
+policy. Public 128-bit Reps, a tagged signed/unsigned result, arbitrary
+precision, or another widened representation would each be separate API and
+ABI decisions and are outside the current M3 scope.
+
+This conclusion preserves the library's existing built-in-Rep model and avoids
+turning Class-O support into a general extended-integer subsystem.
