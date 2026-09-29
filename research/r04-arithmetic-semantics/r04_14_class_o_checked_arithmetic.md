@@ -411,3 +411,67 @@ preserving the existing M3 architecture:
 
 The probe should test API shape, CTFE, attributes, and compile-negative OM /
 semantic-invalid cases. It is still research and must not modify production.
+
+
+## Probe 5 result — Quantity-shaped checked API
+
+Verified locally on x86_64:
+
+- DMD 2.111.0: PASS;
+- LDC 1.41.0: PASS.
+
+The prototype demonstrates that named checked O64 arithmetic can be integrated
+with the current Quantity architecture without weakening Class-W direct
+operators.
+
+Validated research shape:
+
+- `checkedAdd` for semantically valid additive Quantities;
+- `checkedSub` for semantically valid subtractive Quantities;
+- `checkedMul` for scalable Quantity x integral scalar;
+- `checkedMul` for Quantity x Quantity after ProductResultSpec resolution;
+- result carrier `value | overflow`;
+- OM combinations remain compile-time unavailable;
+- semantically invalid Spec combinations remain compile-time unavailable;
+- CTFE and `@safe pure nothrow @nogc` are preserved.
+
+The names are intentionally distinct from `exactMul`. Current production
+`exactMul` expresses exact canonical rescaling and can fail with
+`ProductFailure.inexact`; checked Class-O multiplication expresses
+value-dependent representability and can fail with overflow. Those failure
+dimensions must not be conflated accidentally.
+
+### R04.14 O64 core conclusion
+
+The unscaled O64 core is now supported by five layers of evidence:
+
+1. complete Class-W/Class-O surface classification;
+2. natural O64 versus mixed-domain separation;
+3. portable pre-overflow predicates;
+4. independent exact BigInt oracle audit;
+5. Quantity-shaped semantic/API integration on DMD and LDC.
+
+The preferred research architecture remains:
+
+> direct integral operators are available only for Class W; Class O may gain
+> explicit named checked operations where a natural built-in ResultRep exists.
+
+This preserves the existing operator invariant while admitting useful
+value-dependent 64-bit arithmetic.
+
+### Still open
+
+R04.14 has not yet established production semantics for:
+
+1. **OM mixed-domain arithmetic** — cases whose natural mathematical result set
+   crosses the `long`/`ulong` boundary;
+2. **checked multiplication with non-1/1 canonical rescale** — interaction
+   between overflow and `ProductFailure.inexact`;
+3. final public carrier/type naming and export placement;
+4. optimized code generation versus compiler intrinsics / hand-written checked
+   arithmetic;
+5. production negative-test matrix and documentation.
+
+These should remain separate research questions. In particular, solving
+rescaling must not be used to smuggle in an OM policy, and solving OM must not
+change the proven O64 core.
