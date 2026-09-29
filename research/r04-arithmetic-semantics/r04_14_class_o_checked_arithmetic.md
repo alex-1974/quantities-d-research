@@ -602,3 +602,47 @@ work before promotion includes:
 - negative compile-contract matrix;
 - DMD/LDC optimized codegen and performance comparison;
 - production documentation and Fast Gate.
+
+
+## Probe 9 result — operation-specific result carriers
+
+Verified locally on x86_64 with DMD 2.111.0 and LDC 1.41.0.
+
+Both compilers passed the carrier/API prototype with CTFE and
+`@safe pure nothrow @nogc`.
+
+Preferred public state spaces:
+
+- unscaled checked O64 arithmetic: `value | overflow`;
+- checked rescaled product: `exact | inexact | overflow`;
+- existing exact division remains:
+  `exact | inexact | divisionByZero`.
+
+### Carrier policy
+
+Do not introduce a universal public `ArithmeticStatus`.
+
+The public failure/status vocabulary should remain as narrow as the operation's
+actual semantics. A generic value-or-failure implementation mechanism may be
+private/internal where useful, but it must not broaden public state spaces.
+
+This is consistent with the existing M3 separation between
+`ProductResultValue` and `DivisionResult`.
+
+Default-constructed carriers must remain failure states and must never
+fabricate a successful value.
+
+### Remaining promotion work
+
+The semantic/API research is now sufficiently constrained to move to the
+performance gate. Before production promotion, compare optimized DMD/LDC
+code generation for:
+
+- signed/unsigned checked add;
+- signed/unsigned checked subtract where applicable;
+- signed/unsigned checked multiply;
+- the cross-cancelled checked rescale kernel.
+
+Compiler intrinsics or checked-integer helpers are optimization candidates
+only. They must not define different semantics from the portable reference
+implementation.
