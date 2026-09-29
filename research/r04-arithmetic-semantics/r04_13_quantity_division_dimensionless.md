@@ -427,3 +427,66 @@ If that refined range proof can select a built-in ResultRep, then
 `resultOutOfRange` becomes unreachable for every admitted call and can be
 removed from the public exact-division result domain. The remaining runtime
 outcomes would be `exact | inexact | divisionByZero`.
+
+
+## Probe 8 — asymmetric endpoint ResultRep selection
+
+The refined oracle tracks positive and negative quotient reachability
+separately.
+
+For ordinary built-in integral Reps, `+1` is always a possible nonzero
+divisor. Signed divisor Reps also contain `-1`. These values provide the
+worst-magnitude endpoint witnesses.
+
+The resulting sign rules are:
+
+- signed / signed: both signs are reachable; `Lhs.min / -1` can expose one
+  extra positive magnitude value;
+- unsigned / unsigned: only nonnegative results are reachable;
+- unsigned / signed: both signs are reachable because the divisor may be
+  negative;
+- signed / unsigned: the quotient retains the lhs sign envelope.
+
+The exact scale `n/d` is incorporated into each endpoint proof using exact
+128-bit product comparison.
+
+Representative ResultRep outcomes:
+
+| Lhs / Rhs | scale | smallest built-in candidate in probe |
+|---|---:|---|
+| byte / byte | 1 | short |
+| short / short | 1 | int |
+| int / int | 1 | long |
+| long / long | 1 | none |
+| ubyte / ubyte | 1 | ubyte |
+| uint / uint | 1 | uint |
+| ubyte / byte | 1 | short |
+| uint / int | 1 | long |
+| byte / ubyte | 1 | byte |
+| int / uint | 1 | int |
+| int / int | 1/1000 | int |
+| int / int | 5/18 | int |
+| byte / byte | 1000 | int |
+
+### Failure-domain consequence
+
+For any combination where the endpoint oracle selects a ResultRep, every exact
+mathematical quotient is statically proven to fit that representation.
+Therefore `resultOutOfRange` need not be a runtime result for admitted calls.
+
+The remaining integral Quantity/Quantity exact-division outcomes are:
+
+```text
+exact
+inexact
+divisionByZero
+```
+
+If no built-in ResultRep satisfies the endpoint proof, the operation should
+not participate in overload resolution (or should fail at compile time through
+an explicit unsupported-Rep contract), rather than adding a runtime range
+failure.
+
+This matches the existing arithmetic design principle: representational safety
+is a compile-time gate; semantic validity that depends on runtime operand
+values remains a runtime result.
