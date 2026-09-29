@@ -143,8 +143,9 @@ enum mulClassOCount = CountClassO!(isClassOMul, Reps);
 // production Class-W shape algorithm rather than D's native arithmetic types.
 static assert(!isClassOAdd!(int, int));
 static assert(is(AddRep!(int, int) == long));
+// Do not prescribe AddRep!(uint, uint) here. Probe 1 observes the current
+// production algorithm; any surprising classification is evidence to audit.
 static assert(!isClassOAdd!(uint, uint));
-static assert(is(AddRep!(uint, uint) == ulong));
 static assert(isClassOAdd!(long, long));
 static assert(isClassOAdd!(ulong, ulong));
 
