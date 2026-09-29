@@ -373,3 +373,57 @@ Witnesses include:
 
 The next Rep-policy probe should therefore focus on final-result bounds, not on
 constructing a universally wider intermediate integer.
+
+
+## Probe 7 — compile-time bound for exact quotient results
+
+For a fixed positive reduced canonical rescale `n/d`, any nonzero integral
+divisor has magnitude at least `1`. Therefore the magnitude envelope for an
+exact quotient is bounded by
+
+```text
+|lhs|max * n
+-------------
+      d
+```
+
+The probe does not form that potentially overflowing product. Instead it asks
+whether a candidate ResultRep limit is sufficient by comparing
+
+```text
+|lhs|max * n <= ResultLimit * d
+```
+
+with exact 64x64 -> 128-bit product comparison.
+
+This establishes an important direction: final-result admissibility can be
+proved at compile time without requiring a universally wider runtime
+intermediate.
+
+Examples from the probe:
+
+- unit scale: `int` operands need a wider signed result domain for the
+  `int.min / -1` witness;
+- `long` has no wider built-in signed type for the analogous `+2^63`
+  witness;
+- a scale such as `1/1000` can reduce the complete result envelope;
+- `5/18` (km/h -> m/s) likewise reduces it;
+- a scale such as `1000` can require a wider ResultRep;
+- exact 128-bit comparison handles compile-time bound products that exceed
+  `ulong`.
+
+### Required refinement
+
+A magnitude-only envelope is not sufficient for final ResultRep selection.
+Signed built-in integer ranges are asymmetric: the negative endpoint has one
+additional magnitude value. Reachability of positive and negative quotient
+endpoints depends on the signedness and signs of both operand Reps.
+
+The production-quality oracle must therefore compute separate minimum and
+maximum exact-result bounds, following the same endpoint-oriented principle as
+the product range algebra.
+
+If that refined range proof can select a built-in ResultRep, then
+`resultOutOfRange` becomes unreachable for every admitted call and can be
+removed from the public exact-division result domain. The remaining runtime
+outcomes would be `exact | inexact | divisionByZero`.
