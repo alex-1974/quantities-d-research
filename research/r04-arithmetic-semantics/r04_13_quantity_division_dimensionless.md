@@ -490,3 +490,19 @@ failure.
 This matches the existing arithmetic design principle: representational safety
 is a compile-time gate; semantic validity that depends on runtime operand
 values remains a runtime result.
+
+
+### Compiler evidence for Probe 8
+
+Verified locally on x86_64 Linux at commit
+`cd77498e523101731207271b102891f7633fefa2`:
+
+- DMD64 v2.111.0: PASS
+- LDC 1.41.0, based on DMD v2.111.0 / LLVM 19.1.7: PASS
+- compilation used `-preview=dip1000`
+- the probe is accepted by both baseline compilers without diagnostics.
+
+This confirms the D template formulation and the tested endpoint/ResultRep
+assertions on the workspace baseline compilers. It does not by itself promote
+the research design to production or substitute for running the complete
+R04.13 probe set.
