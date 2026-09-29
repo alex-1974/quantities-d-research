@@ -115,12 +115,14 @@ template ExactQuotientEnvelope(Lhs, Rhs, ulong N, ulong D)
     enum hasNegative = negativeSourceMagnitude != 0;
 }
 
-template EnvelopeFits(Env, Candidate)
+template EnvelopeFits(Lhs, Rhs, ulong N, ulong D, Candidate)
 {
+    alias Env = ExactQuotientEnvelope!(Lhs, Rhs, N, D);
+
     enum positiveFits = scaledFits(
         Env.positiveSourceMagnitude,
-        Env.N,
-        Env.D,
+        N,
+        D,
         positiveMax!Candidate);
 
     static if (Env.hasNegative)
@@ -128,8 +130,8 @@ template EnvelopeFits(Env, Candidate)
         static if (isSigned!Candidate)
             enum negativeFits = scaledFits(
                 Env.negativeSourceMagnitude,
-                Env.N,
-                Env.D,
+                N,
+                D,
                 negativeMagnitudeMax!Candidate);
         else
             enum negativeFits = false;
@@ -142,28 +144,21 @@ template EnvelopeFits(Env, Candidate)
 
 template ExactQuotientResultRep(Lhs, Rhs, ulong N, ulong D)
 {
-    alias Env = ExactQuotientEnvelope!(Lhs, Rhs, N, D);
-
-    // Choose by value-domain capacity, not by signed-first declaration order.
-    // For equal storage width, an unsigned type contains every nonnegative
-    // value of the signed type and is therefore the smaller sufficient domain
-    // when negative results are impossible. If negatives are reachable,
-    // unsigned candidates fail EnvelopeFits automatically.
-    static if (EnvelopeFits!(Env, ubyte))
+    static if (EnvelopeFits!(Lhs, Rhs, N, D, ubyte))
         alias ExactQuotientResultRep = ubyte;
-    else static if (EnvelopeFits!(Env, byte))
+    else static if (EnvelopeFits!(Lhs, Rhs, N, D, byte))
         alias ExactQuotientResultRep = byte;
-    else static if (EnvelopeFits!(Env, ushort))
+    else static if (EnvelopeFits!(Lhs, Rhs, N, D, ushort))
         alias ExactQuotientResultRep = ushort;
-    else static if (EnvelopeFits!(Env, short))
+    else static if (EnvelopeFits!(Lhs, Rhs, N, D, short))
         alias ExactQuotientResultRep = short;
-    else static if (EnvelopeFits!(Env, uint))
+    else static if (EnvelopeFits!(Lhs, Rhs, N, D, uint))
         alias ExactQuotientResultRep = uint;
-    else static if (EnvelopeFits!(Env, int))
+    else static if (EnvelopeFits!(Lhs, Rhs, N, D, int))
         alias ExactQuotientResultRep = int;
-    else static if (EnvelopeFits!(Env, ulong))
+    else static if (EnvelopeFits!(Lhs, Rhs, N, D, ulong))
         alias ExactQuotientResultRep = ulong;
-    else static if (EnvelopeFits!(Env, long))
+    else static if (EnvelopeFits!(Lhs, Rhs, N, D, long))
         alias ExactQuotientResultRep = long;
     else
         alias ExactQuotientResultRep = void;
@@ -173,9 +168,9 @@ alias ByteByteEnvelope = ExactQuotientEnvelope!(byte, byte, 1, 1);
 static assert(ByteByteEnvelope.positiveSourceMagnitude == 128);
 static assert(ByteByteEnvelope.negativeSourceMagnitude == 128);
 static assert(ByteByteEnvelope.hasNegative);
-static assert(!EnvelopeFits!(ByteByteEnvelope, byte));
-static assert(!EnvelopeFits!(ByteByteEnvelope, ubyte));
-static assert(EnvelopeFits!(ByteByteEnvelope, short));
+static assert(!EnvelopeFits!(byte, byte, 1, 1, byte));
+static assert(!EnvelopeFits!(byte, byte, 1, 1, ubyte));
+static assert(EnvelopeFits!(byte, byte, 1, 1, short));
 
 // Signed/signed unit-scale division: the positive min/-1 witness forces one
 // wider signed representation.
