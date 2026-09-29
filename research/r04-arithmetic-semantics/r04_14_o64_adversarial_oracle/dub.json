@@ -1,0 +1,5 @@
+{
+  "name": "r04-14-o64-adversarial-oracle",
+  "description": "R04.14 Probe 4: audit O64 predicates against BigInt",
+  "targetType": "executable"
+}
