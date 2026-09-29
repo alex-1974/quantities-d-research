@@ -555,3 +555,50 @@ Consequently, an intermediate wider than ResultRep is not itself overflow.
 For example, `long.max * 2 / 2` is exact `long.max`.
 
 This establishes the semantic target for a fixed-width implementation.
+
+
+## Probe 8 result — fixed-width checked rescale kernel
+
+Verified locally on x86_64:
+
+- DMD 2.111.0: PASS — 23,716 exact-oracle comparisons;
+- LDC 1.41.0: PASS — 23,716 exact-oracle comparisons;
+- total observed comparisons across both runs: 47,432;
+- no status or exact-value mismatch.
+
+The candidate kernel uses no BigInt, allocation, or public widened integer
+representation. It is CTFE-capable and `@safe pure nothrow @nogc`.
+
+Validated algorithm:
+
+1. separate sign and unsigned operand magnitudes;
+2. cross-cancel the denominator against lhs magnitude, rhs magnitude, and the
+   canonical-rescale numerator;
+3. if a denominator remains, classify the mathematical result as `inexact`;
+4. select the final ResultRep magnitude limit from the result sign;
+5. prove each remaining multiplication against that final limit before
+   evaluating it;
+6. classify a proven-too-large exact integer as `overflow`;
+7. otherwise construct the exact ResultRep, including `long.min`.
+
+This correctly distinguishes final-result overflow from intermediate-width
+artifacts. In particular, cases such as `long.max * 2 * 3 / 6` remain exact.
+
+### Consequence
+
+For signed O64 product results, canonical rescaling does not require BigInt or
+a wider public Rep to support the runtime state model
+
+    exact | inexact | overflow
+
+A fixed-width, allocation-free implementation is feasible.
+
+This is algorithmic evidence, not yet a production API decision. Remaining
+work before promotion includes:
+
+- final public result carrier and naming;
+- unsigned O64 rescaled-product symmetry where applicable;
+- Quantity-shaped rescaled checked API integration;
+- negative compile-contract matrix;
+- DMD/LDC optimized codegen and performance comparison;
+- production documentation and Fast Gate.
