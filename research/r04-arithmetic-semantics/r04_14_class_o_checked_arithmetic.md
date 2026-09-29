@@ -236,3 +236,108 @@ small number of structural families:
 Addition and multiplication are mathematically symmetric, but subtraction is
 ordered. ResultRep selection must therefore be proven per operation even though
 Probe 1 happened to produce the same W/O bitmap.
+
+
+## Probe 2 result — checked ResultRep domain split
+
+Verified locally on x86_64 with both baseline compilers:
+
+- DMD 2.111.0: PASS
+- LDC 1.41.0: PASS
+- identical matrices on both compilers.
+
+Probe 2 classified candidate checked result domains as:
+
+- `S`: signed 64-bit candidate (`long`);
+- `U`: unsigned 64-bit candidate (`ulong`);
+- `M`: no single natural built-in 64-bit result domain under the tested
+  hypothesis.
+
+The full matrices were:
+
+```text
+ADD / MUL
+SSSSSSSM
+SUSUSUSU
+SSSSSSSM
+SUSUSUSU
+SSSSSSSM
+SUSUSUSU
+SSSSSSSM
+MUMUMUMU
+
+SUB
+SSSSSSSM
+SSSSSSSM
+SSSSSSSM
+SSSSSSSM
+SSSSSSSM
+SSSSSSSM
+SSSSSSSM
+MMMMMMMM
+```
+
+Only the 28 Class-O cells from Probe 1 are relevant to R04.14.
+
+### Addition and multiplication
+
+For Class-O pairs:
+
+- `long` with signed <=32-bit -> natural checked `long`;
+- `long` with unsigned <=32-bit -> natural checked `long`;
+- `ulong` with unsigned <=32-bit -> natural checked `ulong`;
+- `long,ulong` and `ulong,long` -> mixed-domain unresolved;
+- `long,long` -> natural checked `long`;
+- `ulong,ulong` -> natural checked `ulong`.
+
+The remaining signed-small/`ulong` ordered pairs are mixed-domain under this
+hypothesis because their mathematical result set contains both negative values
+and positive values above `long.max`.
+
+Thus mixed-domain ambiguity is not limited to the literal `long/ulong` pair;
+a full-width `ulong` combined with any signed operand can expose both sides of
+the built-in 64-bit signed/unsigned boundary.
+
+### Subtraction
+
+Subtraction is more restrictive because operand order and negative results
+matter.
+
+- Class-O cases involving `long` but no `ulong` have a natural checked
+  `long` domain.
+- Every Class-O case involving `ulong` is mixed-domain under the tested
+  hypothesis.
+
+In particular, even `ulong - ulong` spans negative mathematical results and
+positive values up to `ulong.max`; neither `long` nor `ulong` alone
+preserves that complete natural success set.
+
+### Key conclusion
+
+Class O splits into at least two semantic categories:
+
+1. **O64** — a natural built-in 64-bit ResultRep exists and runtime overflow is
+   sufficient;
+2. **OM** — the mathematical result domain crosses the `long`/`ulong`
+   representability boundary, so choosing either built-in type would classify
+   otherwise representable mathematical results as failure.
+
+This is not merely an implementation issue. It is a public semantic choice.
+
+Therefore R04.14 must not yet promote a universal `value | overflow` carrier
+for every Class-O pair.
+
+### Next probe
+
+Probe 3 should focus on O64 first:
+
+- checked long addition/subtraction/multiplication;
+- checked ulong addition/multiplication;
+- mixed-width Class-O pairs that resolve naturally to one of those domains.
+
+It should prove overflow predicates on original operand values, CTFE, and
+`@safe pure nothrow @nogc`.
+
+OM should remain separately classified and compile-time unavailable during that
+probe. A later probe can decide whether OM deserves a wider tagged result,
+128-bit internal/result representation, or simply remains unsupported.
