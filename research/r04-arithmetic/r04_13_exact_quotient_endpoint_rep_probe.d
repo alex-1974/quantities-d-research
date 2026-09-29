@@ -144,22 +144,27 @@ template ExactQuotientResultRep(Lhs, Rhs, ulong N, ulong D)
 {
     alias Env = ExactQuotientEnvelope!(Lhs, Rhs, N, D);
 
-    static if (EnvelopeFits!(Env, byte))
-        alias ExactQuotientResultRep = byte;
-    else static if (EnvelopeFits!(Env, ubyte))
+    // Choose by value-domain capacity, not by signed-first declaration order.
+    // For equal storage width, an unsigned type contains every nonnegative
+    // value of the signed type and is therefore the smaller sufficient domain
+    // when negative results are impossible. If negatives are reachable,
+    // unsigned candidates fail EnvelopeFits automatically.
+    static if (EnvelopeFits!(Env, ubyte))
         alias ExactQuotientResultRep = ubyte;
-    else static if (EnvelopeFits!(Env, short))
-        alias ExactQuotientResultRep = short;
+    else static if (EnvelopeFits!(Env, byte))
+        alias ExactQuotientResultRep = byte;
     else static if (EnvelopeFits!(Env, ushort))
         alias ExactQuotientResultRep = ushort;
-    else static if (EnvelopeFits!(Env, int))
-        alias ExactQuotientResultRep = int;
+    else static if (EnvelopeFits!(Env, short))
+        alias ExactQuotientResultRep = short;
     else static if (EnvelopeFits!(Env, uint))
         alias ExactQuotientResultRep = uint;
-    else static if (EnvelopeFits!(Env, long))
-        alias ExactQuotientResultRep = long;
+    else static if (EnvelopeFits!(Env, int))
+        alias ExactQuotientResultRep = int;
     else static if (EnvelopeFits!(Env, ulong))
         alias ExactQuotientResultRep = ulong;
+    else static if (EnvelopeFits!(Env, long))
+        alias ExactQuotientResultRep = long;
     else
         alias ExactQuotientResultRep = void;
 }
